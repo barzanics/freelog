@@ -1,0 +1,739 @@
+/* Mixins Start */
+/* Mixins End */
+body.dark .forget-nav li, body.faragard-dark .forget-nav li, body.blue-dark .forget-nav li, body.orange-dark .forget-nav li, body.fuchsia-dark .forget-nav li, body.pink-dark .forget-nav li, body.emerald-dark .forget-nav li, body.red-dark .forget-nav li, body.sky-dark .forget-nav li, body.yellow-dark .forget-nav li, body.green-dark .forget-nav li, body.purple-dark .forget-nav li, body.indigo-dark .forget-nav li, body.slate-dark .forget-nav li, body.yellow-blue-dark .forget-nav li {
+  color: rgb(var(--rgb-first-darker));
+}
+body.dark .logo-white, body.faragard-dark .logo-white, body.blue-dark .logo-white, body.orange-dark .logo-white, body.fuchsia-dark .logo-white, body.pink-dark .logo-white, body.emerald-dark .logo-white, body.red-dark .logo-white, body.sky-dark .logo-white, body.yellow-dark .logo-white, body.green-dark .logo-white, body.purple-dark .logo-white, body.indigo-dark .logo-white, body.slate-dark .logo-white, body.yellow-blue-dark .logo-white {
+  display: block;
+}
+body.dark .logo-black, body.faragard-dark .logo-black, body.blue-dark .logo-black, body.orange-dark .logo-black, body.fuchsia-dark .logo-black, body.pink-dark .logo-black, body.emerald-dark .logo-black, body.red-dark .logo-black, body.sky-dark .logo-black, body.yellow-dark .logo-black, body.green-dark .logo-black, body.purple-dark .logo-black, body.indigo-dark .logo-black, body.slate-dark .logo-black, body.yellow-blue-dark .logo-black {
+  display: none;
+}
+
+body {
+  transition: all 200ms;
+  background-color: rgb(var(--main-bg));
+}
+
+body.dark, body.faragard-dark, body.blue-dark, body.orange-dark, body.fuchsia-dark, body.pink-dark, body.emerald-dark, body.red-dark, body.sky-dark, body.yellow-dark, body.green-dark, body.purple-dark, body.indigo-dark, body.slate-dark, body.yellow-blue-dark {
+  background-color: rgb(var(--rgb-slate-900));
+}
+
+.text-dark {
+  color: rgb(var(--rgb-dark)) !important;
+}
+
+.text-darkest {
+  color: rgb(var(--rgb-darkest)) !important;
+}
+
+.bg-lightest {
+  background-color: rgb(var(--rgb-lightest)) !important;
+}
+
+.label-text-sm:has(+ .form-control:focus) span::after {
+  background-color: rgb(var(--rgb-ninth-lighter));
+}
+
+body.dark .label-text.label-error .label-text-sm span::after, body.faragard-dark .label-text.label-error .label-text-sm span::after, body.blue-dark .label-text.label-error .label-text-sm span::after, body.orange-dark .label-text.label-error .label-text-sm span::after, body.fuchsia-dark .label-text.label-error .label-text-sm span::after, body.pink-dark .label-text.label-error .label-text-sm span::after, body.emerald-dark .label-text.label-error .label-text-sm span::after, body.red-dark .label-text.label-error .label-text-sm span::after, body.sky-dark .label-text.label-error .label-text-sm span::after, body.yellow-dark .label-text.label-error .label-text-sm span::after, body.green-dark .label-text.label-error .label-text-sm span::after, body.purple-dark .label-text.label-error .label-text-sm span::after, body.indigo-dark .label-text.label-error .label-text-sm span::after, body.slate-dark .label-text.label-error .label-text-sm span::after, body.yellow-blue-dark .label-text.label-error .label-text-sm span::after {
+  background-color: rgb(var(--rgb-ninth-lighter)) !important;
+}
+body.dark .label-text.label-success .label-text-sm span::after, body.faragard-dark .label-text.label-success .label-text-sm span::after, body.blue-dark .label-text.label-success .label-text-sm span::after, body.orange-dark .label-text.label-success .label-text-sm span::after, body.fuchsia-dark .label-text.label-success .label-text-sm span::after, body.pink-dark .label-text.label-success .label-text-sm span::after, body.emerald-dark .label-text.label-success .label-text-sm span::after, body.red-dark .label-text.label-success .label-text-sm span::after, body.sky-dark .label-text.label-success .label-text-sm span::after, body.yellow-dark .label-text.label-success .label-text-sm span::after, body.green-dark .label-text.label-success .label-text-sm span::after, body.purple-dark .label-text.label-success .label-text-sm span::after, body.indigo-dark .label-text.label-success .label-text-sm span::after, body.slate-dark .label-text.label-success .label-text-sm span::after, body.yellow-blue-dark .label-text.label-success .label-text-sm span::after {
+  background-color: rgb(var(--rgb-ninth-lighter)) !important;
+}
+
+.label-text {
+  position: relative;
+  width: 100%;
+}
+.label-text.label-error .label-text-sm span::after {
+  background-color: rgb(var(--rgb-red-50)) !important;
+}
+.label-text.label-success .label-text-sm span::after {
+  background-color: rgb(var(--rgb-green-50)) !important;
+}
+.label-text .label-text-sm {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: -8px;
+  right: 6px;
+  color: rgb(var(--rgb-light-dark));
+}
+html[dir=ltr] .label-text .label-text-sm {
+  left: 6px;
+  right: auto;
+}
+
+.label-text .label-text-sm span {
+  z-index: 1;
+}
+.label-text .label-text-sm span::after {
+  content: "";
+  width: 97%;
+  height: 4px;
+  background-color: rgb(var(--rgb-lighter));
+  position: absolute;
+  top: 58%;
+  right: 7px;
+  transform: translateY(-50%);
+  z-index: -1;
+}
+html[dir=ltr] .label-text .label-text-sm span::after {
+  left: 7px;
+  right: auto;
+}
+
+.label-text .label-text-sm span:not(.required)::after {
+  width: 85%;
+}
+.label-text .label-text-sm .required {
+  z-index: 1;
+}
+.label-text .label-text-sm .required::before {
+  content: "*";
+  color: rgb(var(--rgb-red-600));
+  background: transparent;
+  padding-left: 2px;
+  padding-right: 2px;
+  position: absolute;
+  left: -6px;
+  top: 0;
+  font-size: 16px;
+}
+html[dir=ltr] .label-text .label-text-sm .required::before {
+  right: -6px;
+  left: auto;
+}
+
+.label-error .form-control {
+  background-color: rgb(var(--rgb-red-50)) !important;
+  border-color: rgb(var(--rgb-red-500)) !important;
+}
+.label-error .form-control:focus {
+  background-color: rgb(var(--rgb-red-50)) !important;
+  border-color: rgb(var(--rgb-red-500)) !important;
+}
+
+.label-success .form-control {
+  background-color: rgb(var(--rgb-green-50)) !important;
+  border-color: rgb(var(--rgb-green-700)) !important;
+}
+.label-success .form-control:focus {
+  background-color: rgb(var(--rgb-green-50)) !important;
+  border-color: rgb(var(--rgb-green-700)) !important;
+}
+
+body.dark .label-error .form-control, body.faragard-dark .label-error .form-control, body.blue-dark .label-error .form-control, body.orange-dark .label-error .form-control, body.fuchsia-dark .label-error .form-control, body.pink-dark .label-error .form-control, body.emerald-dark .label-error .form-control, body.red-dark .label-error .form-control, body.sky-dark .label-error .form-control, body.yellow-dark .label-error .form-control, body.green-dark .label-error .form-control, body.purple-dark .label-error .form-control, body.indigo-dark .label-error .form-control, body.slate-dark .label-error .form-control, body.yellow-blue-dark .label-error .form-control {
+  background-color: rgb(var(--rgb-red-600), 0.1) !important;
+}
+body.dark .label-error .form-control:focus, body.faragard-dark .label-error .form-control:focus, body.blue-dark .label-error .form-control:focus, body.orange-dark .label-error .form-control:focus, body.fuchsia-dark .label-error .form-control:focus, body.pink-dark .label-error .form-control:focus, body.emerald-dark .label-error .form-control:focus, body.red-dark .label-error .form-control:focus, body.sky-dark .label-error .form-control:focus, body.yellow-dark .label-error .form-control:focus, body.green-dark .label-error .form-control:focus, body.purple-dark .label-error .form-control:focus, body.indigo-dark .label-error .form-control:focus, body.slate-dark .label-error .form-control:focus, body.yellow-blue-dark .label-error .form-control:focus {
+  background-color: rgb(var(--rgb-red-600), 0.1) !important;
+}
+body.dark .label-success .form-control, body.faragard-dark .label-success .form-control, body.blue-dark .label-success .form-control, body.orange-dark .label-success .form-control, body.fuchsia-dark .label-success .form-control, body.pink-dark .label-success .form-control, body.emerald-dark .label-success .form-control, body.red-dark .label-success .form-control, body.sky-dark .label-success .form-control, body.yellow-dark .label-success .form-control, body.green-dark .label-success .form-control, body.purple-dark .label-success .form-control, body.indigo-dark .label-success .form-control, body.slate-dark .label-success .form-control, body.yellow-blue-dark .label-success .form-control {
+  background-color: rgb(var(--rgb-green-600), 0.1) !important;
+}
+body.dark .label-success .form-control:focus, body.faragard-dark .label-success .form-control:focus, body.blue-dark .label-success .form-control:focus, body.orange-dark .label-success .form-control:focus, body.fuchsia-dark .label-success .form-control:focus, body.pink-dark .label-success .form-control:focus, body.emerald-dark .label-success .form-control:focus, body.red-dark .label-success .form-control:focus, body.sky-dark .label-success .form-control:focus, body.yellow-dark .label-success .form-control:focus, body.green-dark .label-success .form-control:focus, body.purple-dark .label-success .form-control:focus, body.indigo-dark .label-success .form-control:focus, body.slate-dark .label-success .form-control:focus, body.yellow-blue-dark .label-success .form-control:focus {
+  background-color: rgb(var(--rgb-green-600), 0.1) !important;
+}
+
+.btn-sm {
+  width: 88px;
+}
+
+.text-first {
+  color: rgb(var(--rgb-first-darker)) !important;
+}
+
+.text-second-darker {
+  color: rgb(var(--rgb-second-darker)) !important;
+}
+
+.text-light-dark {
+  color: rgb(var(--rgb-light-dark)) !important;
+}
+
+.shadow {
+  box-shadow: 0 0 8px 0 rgba(var(--rgb-darkest), 0.08) !important;
+}
+
+.form-control {
+  background-color: rgb(var(--rgb-lighter));
+  border-color: rgb(var(--rgb-light)) !important;
+  color: rgb(var(--rgb-dark)) !important;
+}
+
+.form-control:focus {
+  color: var(--rgb-darkest);
+  background-color: rgb(var(--rgb-ninth-lighter));
+  border-color: rgb(var(--rgb-first-darker)) !important;
+  outline: 0;
+  box-shadow: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none !important;
+  border-color: var(--rgb-first-darker) !important;
+  box-shadow: 0 1px 15px rgba(var(--rgb-darkest), 0.04), 0 1px 6px rgba(var(--rgb-darkest), 0.04) !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: rgb(var(--rgb-darkest));
+}
+
+.auth-card {
+  transition: all 200ms;
+  background-color: rgb(var(--rgb-ninth-lighter));
+  max-width: 880px;
+}
+.auth-card .row {
+  min-height: 540px;
+}
+
+.auth-right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.auth-right img, .auth-right svg {
+  width: 150px;
+  max-width: 150px;
+}
+.auth-right h6 {
+  text-align: center;
+}
+.auth-right::before {
+  content: "";
+  position: absolute;
+  width: 84%;
+  height: 1px;
+  background: var(--sso-border-light);
+  bottom: -10px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.auth-left {
+  display: flex;
+  flex-direction: column;
+}
+.auth-left h6 {
+  color: rgb(var(--rgb-darkest));
+}
+
+.logo-white {
+  display: none;
+}
+
+main .container .row {
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+.password-strength-message .message-item {
+  color: rgb(var(--sso-rgb-darker)) !important;
+}
+
+.ui-datepicker-header {
+  background-color: rgb(var(--rgb-first-dark));
+}
+
+.ui-datepicker .ui-datepicker-buttonpane button {
+  color: rgb(var(--rgb-first-dark));
+}
+
+.ui-datepicker, .datepicker-select-wrapper {
+  background-color: rgb(var(--rgb-lighter)) !important;
+}
+
+/* Jquery ui Date picker And Time picker Start */
+.ui-datepicker {
+  box-shadow: 5px 0 20px 1px rgb(var(--rgb-darkest), 0.2);
+  background-color: rgb(var(--rgb-lightest));
+}
+.ui-datepicker-header {
+  background-color: rgb(var(--rgb-first));
+}
+.ui-datepicker-header .ui-datepicker-title {
+  color: rgb(var(--rgb-lightest));
+}
+.ui-datepicker table.ui-datepicker-calendar thead tr th {
+  color: rgb(var(--rgb-light-dark));
+}
+.ui-datepicker table.ui-datepicker-calendar tbody tr td a.ui-state-default {
+  color: rgb(var(--rgb-darkest));
+}
+.ui-datepicker table.ui-datepicker-calendar tbody tr td.ui-datepicker-week-col {
+  color: rgb(var(--rgb-light-dark));
+}
+.ui-datepicker table.ui-datepicker-calendar tbody tr td.ui-datepicker-today:hover a::before {
+  background-color: rgb(var(--rgb-first));
+}
+.ui-datepicker table.ui-datepicker-calendar tbody tr td.ui-datepicker-today a::before {
+  background-color: rgb(var(--rgb-second), 0.2);
+}
+.ui-datepicker table.ui-datepicker-calendar tbody tr td.ui-datepicker-current-day a {
+  color: rgb(var(--rgb-lightest)) !important;
+}
+.ui-datepicker table.ui-datepicker-calendar tbody tr td.ui-datepicker-current-day a::before {
+  background-color: rgb(var(--rgb-first)) !important;
+}
+.ui-datepicker table.ui-datepicker-calendar tbody tr td:not(.ui-datepicker-week-col):not(.ui-datepicker-current-day):hover a {
+  color: rgb(var(--rgb-lightest));
+}
+.ui-datepicker table.ui-datepicker-calendar tbody tr td a::before {
+  background-color: rgb(var(--rgb-first));
+}
+.ui-datepicker .ui-datepicker-year span {
+  color: rgb(var(--rgb-lightest));
+}
+.ui-datepicker .ui-datepicker-year span:hover {
+  border-color: rgb(var(--rgb-lightest));
+}
+.ui-datepicker .ui-datepicker-year .datepicker-select-wrapper {
+  z-index: 360;
+}
+.ui-datepicker .ui-datepicker-month span {
+  color: rgb(var(--rgb-dark));
+}
+.ui-datepicker .ui-datepicker-month span:hover {
+  color: rgb(var(--rgb-first));
+  border-color: rgb(var(--rgb-first));
+}
+.ui-datepicker .ui-datepicker-navbar .ui-datepicker-title .ui-datepicker-prev::before, .ui-datepicker .ui-datepicker-navbar .ui-datepicker-title .ui-datepicker-next::before {
+  color: rgb(var(--rgb-light-dark));
+}
+.ui-datepicker .datepicker-select-wrapper {
+  background-color: white;
+}
+.ui-datepicker .datepicker-select-wrapper .close-wrapper {
+  color: rgb(var(--rgb-red-500)) !important;
+}
+.ui-datepicker .datepicker-select-wrapper .close-wrapper:hover {
+  background-color: transparent !important;
+}
+.ui-datepicker .datepicker-select-wrapper .datepicker-select-scrollbar div {
+  color: rgb(var(--rgb-dark));
+}
+.ui-datepicker .datepicker-select-wrapper .datepicker-select-scrollbar div:hover {
+  background-color: rgb(var(--rgb-darkest), 0.03);
+}
+.ui-datepicker .datepicker-select-wrapper .datepicker-select-scrollbar div[selected] {
+  background-color: rgb(var(--rgb-first-lighter));
+  color: rgb(var(--rgb-first-darker));
+}
+.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next {
+  position: initial !important;
+  display: block;
+  cursor: pointer !important;
+}
+.ui-datepicker .ui-datepicker-buttonpane button {
+  color: rgb(var(--rgb-first));
+}
+.ui-datepicker .ui-datepicker-buttonpane button:hover {
+  background-color: rgb(var(--rgb-darkest), 0.03);
+}
+
+/* Jquery ui Date picker And Time picker End */
+ul.forget-nav {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 16px;
+  line-height: 24px;
+  font-size: 13px;
+}
+ul.forget-nav li {
+  cursor: pointer;
+  width: 100%;
+  border-radius: 12px;
+  text-align: center;
+  padding: 8px 0;
+  border: 2px solid rgb(var(--rgb-first-dark));
+  font-weight: 400;
+  color: rgb(var(--rgb-first-dark));
+}
+ul.forget-nav li.active {
+  background: rgb(var(--rgb-first-dark));
+  color: white;
+}
+
+.tablist-radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tablist-radio input[type=radio] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+.tablist-radio input[type=radio]:checked + .tablist-radio-label {
+  background: rgb(var(--rgb-first-dark));
+  color: rgb(var(--rgb-white));
+}
+.tablist-radio-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 0;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 12px;
+  text-align: center;
+  border: 2px solid rgb(var(--rgb-first-dark));
+  font-weight: 400;
+  font-size: 13px;
+  transition: all 200ms ease;
+  color: rgb(var(--rgb-first-dark));
+}
+.tablist-radio-pane {
+  display: none;
+}
+.tablist-radio-pane.active {
+  display: block;
+}
+
+body.dark .tablist-radio-label, body.faragard-dark .tablist-radio-label, body.blue-dark .tablist-radio-label, body.orange-dark .tablist-radio-label, body.fuchsia-dark .tablist-radio-label, body.pink-dark .tablist-radio-label, body.emerald-dark .tablist-radio-label, body.red-dark .tablist-radio-label, body.sky-dark .tablist-radio-label, body.yellow-dark .tablist-radio-label, body.green-dark .tablist-radio-label, body.purple-dark .tablist-radio-label, body.indigo-dark .tablist-radio-label, body.slate-dark .tablist-radio-label, body.yellow-blue-dark .tablist-radio-label {
+  color: rgb(var(--rgb-first-darker));
+}
+
+.qr-wrapper {
+  margin: auto;
+  width: fit-content;
+  position: relative;
+}
+.qr-wrapper img, .qr-wrapper svg {
+  width: 170px;
+  height: 170px;
+  max-width: 170px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+.qr-wrapper::before, .qr-wrapper::after {
+  content: "";
+  width: 22px;
+  height: 22px;
+  position: absolute;
+}
+.qr-wrapper::before {
+  top: -22px;
+  right: -22px;
+  border-top: 4px solid rgb(var(--rgb-first-dark));
+  border-right: 4px solid rgb(var(--rgb-first-dark));
+}
+.qr-wrapper::after {
+  bottom: -22px;
+  left: -22px;
+  border-left: 4px solid rgb(var(--rgb-first-dark));
+  border-bottom: 4px solid rgb(var(--rgb-first-dark));
+}
+
+.overlay {
+  opacity: 0;
+  pointer-events: none;
+  background: rgba(var(--rgb-darkest), 0.3);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2705;
+  transition: all 300ms linear;
+}
+
+nav.wizard-progress {
+  z-index: 1;
+  margin-top: 48px;
+}
+nav.wizard-progress ul {
+  display: flex;
+}
+nav.wizard-progress ul li {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  text-align: center;
+}
+nav.wizard-progress ul li:first-child a::after {
+  content: none;
+}
+nav.wizard-progress ul li.active a {
+  color: rgb(var(--rgb-first-darker));
+}
+nav.wizard-progress ul li.active a::after {
+  background-color: rgb(var(--rgb-first));
+}
+nav.wizard-progress ul li.active a::before {
+  font-family: "Font Awesome 6 Pro";
+  content: "\f00c";
+  font-size: 11px;
+  font-weight: 600;
+  color: rgb(var(--rgb-lightest));
+  padding: 6px;
+  background-color: rgb(var(--rgb-first));
+  border: 1px solid rgb(var(--rgb-first));
+  box-shadow: 0 0 0 7.5px rgb(var(--rgb-first), 0.2);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+nav.wizard-progress ul li.current a {
+  color: rgb(var(--rgb-yellow-600));
+}
+nav.wizard-progress ul li.current a::after {
+  background-color: rgb(var(--rgb-yellow-600));
+}
+nav.wizard-progress ul li.current a::before {
+  font-family: "Font Awesome 6 Pro";
+  content: "\f00c";
+  font-size: 11px;
+  font-weight: 600;
+  color: rgb(var(--rgb-lightest));
+  padding: 6px;
+  background-color: rgb(var(--rgb-yellow-600));
+  border: 1px solid rgb(var(--rgb-yellow-600));
+  box-shadow: 0 0 0 7.5px rgb(var(--rgb-yellow-600), 0.2);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+nav.wizard-progress ul li a {
+  color: rgb(var(--rgb-light-dark));
+}
+nav.wizard-progress ul li a::before {
+  content: attr(step);
+  background-color: rgb(var(--rgb-ninth-lighter));
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  border: 8px solid rgb(var(--rgb-ninth-lighter));
+  border-radius: 50%;
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: 9px auto;
+  top: -48px;
+  box-shadow: 1px 1px 3px rgb(var(--rgb-darkest), 0.2);
+  transition: all;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+nav.wizard-progress ul li a::after {
+  content: "";
+  background-color: rgb(var(--rgb-light-dark), 0.6);
+  padding: 0px 0px;
+  position: absolute;
+  top: 14px;
+  right: -50%;
+  width: 100%;
+  height: 2px;
+  margin: 9px auto;
+  top: -34px;
+  z-index: -1;
+  transition: all 0.8s;
+}
+html[dir=ltr] nav.wizard-progress ul li a::after {
+  left: -50%;
+  right: auto;
+}
+
+/*
+  Responsive SSO
+ */
+@media only screen and (min-width: 992px) {
+  main .container .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .auth-right {
+    background-color: rgb(var(--rgb-first-dark));
+  }
+  .auth-right h6 {
+    color: white !important;
+  }
+  .auth-right .right-wrapper {
+    gap: 3rem !important;
+  }
+  .auth-right::before {
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .logo-white {
+    display: block;
+  }
+  .logo-black {
+    display: none;
+  }
+  .auth-right {
+    width: 40%;
+  }
+  .auth-left {
+    width: 60%;
+  }
+}
+@media only screen and (max-width: 575px) {
+  .container {
+    padding: 0 !important;
+  }
+  .row {
+    margin: 0 !important;
+  }
+  .auth-card {
+    border-radius: 0 !important;
+    min-height: 100dvh;
+  }
+  .auth-left h6, .auth-left form {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+  .auth-left form button {
+    text-align: center;
+  }
+}
+@media only screen and (min-width: 575px) and (max-width: 992px) {
+  .auth-card {
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+}
+.qr-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(var(--rgb-ninth-lighter), 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 200ms;
+}
+
+.sso-widget-option {
+  cursor: pointer;
+  font-size: 12px;
+  color: rgb(var(--rgb-light-dark));
+  transition: all 0.5s linear;
+}
+.sso-widget-option-icon {
+  color: rgb(var(--rgb-light-dark));
+  font-size: 26px;
+  width: 61px;
+  height: 58px;
+  border-radius: 12px;
+  background-color: rgb(var(--rgb-lighter));
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 2px 4px rgba(var(--rgb-light-dark), 0.1), 0 4px 8px rgba(var(--rgb-light-dark), 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.sso-widget-option-icon svg {
+  width: 30px;
+  height: 30px;
+}
+.sso-widget-option-icon path, .sso-widget-option-icon svg, .sso-widget-option-icon * {
+  color: rgb(var(--rgb-light-dark));
+  fill: rgb(var(--rgb-light-dark));
+}
+.sso-widget-option-icon > * {
+  transition: all 600ms ease-in-out !important;
+}
+.sso-widget-option-icon::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 14px;
+  background: linear-gradient(45deg, rgba(var(--rgb-light-dark), 0), rgba(var(--rgb-light-dark), 0.1), rgba(var(--rgb-light-dark), 0));
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.4s ease;
+}
+.sso-widget-option:hover {
+  color: rgb(var(--rgb-first-light));
+}
+.sso-widget-option:hover .sso-widget-option-icon {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 8px 16px rgba(var(--rgb-light-dark), 0.15), 0 16px 32px rgba(var(--rgb-light-dark), 0.1), 0 0 40px rgba(var(--rgb-light-dark), 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+.sso-widget-option:hover .sso-widget-option-icon::before {
+  opacity: 1;
+}
+.sso-widget-option.active .sso-widget-option-icon {
+  transform: scale(1.05);
+  border: 1px solid rgb(var(--rgb-lightest));
+  background-color: rgb(var(--rgb-first-light));
+  color: rgb(var(--rgb-lightest));
+  transform: translateY(-4px);
+  box-shadow: 0 0 10px rgba(var(--rgb-first-light), 0.3), 0 0 20px rgba(var(--rgb-first-light), 0.2), 0 0 30px rgba(var(--rgb-first-light), 0.1), 0 0 40px rgba(var(--rgb-first-light), 0.05), inset 0 0 10px rgba(var(--rgb-darkest), 0.1), 0 0 0 3px rgba(var(--rgb-first-light), 0.1);
+}
+.sso-widget-option.active .sso-widget-option-icon path, .sso-widget-option.active .sso-widget-option-icon svg, .sso-widget-option.active .sso-widget-option-icon * {
+  color: rgb(var(--rgb-lightest));
+  fill: rgb(var(--rgb-lightest));
+}
+.sso-widget-option.active .sso-widget-option-icon::before {
+  opacity: 1;
+  animation: activeGlow 1.2s ease-in-out infinite alternate;
+  background: radial-gradient(circle at center, rgba(var(--rgb-lightest), 0.2) 0%, rgba(var(--rgb-first-light), 0.1) 40%, rgba(var(--rgb-first-light), 0) 70%);
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1.02);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.04);
+  }
+}
+@keyframes activePulse {
+  0% {
+    box-shadow: 0 0 8px rgba(var(--rgb-first-light), 0.4), 0 0 16px rgba(var(--rgb-first-light), 0.3), 0 0 24px rgba(var(--rgb-first-light), 0.2), 0 0 32px rgba(var(--rgb-first-light), 0.1), inset 0 0 8px rgba(255, 255, 255, 0.2), 0 0 0 3px rgba(var(--rgb-first-light), 0.15);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(var(--rgb-first-light), 0.6), 0 0 25px rgba(var(--rgb-first-light), 0.4), 0 0 35px rgba(var(--rgb-first-light), 0.3), 0 0 45px rgba(var(--rgb-first-light), 0.15), inset 0 0 15px rgba(255, 255, 255, 0.3), 0 0 0 3px rgba(var(--rgb-first-light), 0.25);
+  }
+}
+@keyframes activeGlow {
+  0% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+.sso-widget-option:nth-child(1) .sso-widget-option-icon {
+  transition-delay: 0.1s;
+}
+.sso-widget-option:nth-child(2) .sso-widget-option-icon {
+  transition-delay: 0.2s;
+}
+.sso-widget-option:nth-child(3) .sso-widget-option-icon {
+  transition-delay: 0.3s;
+}
+.sso-widget-option:nth-child(4) .sso-widget-option-icon {
+  transition-delay: 0.4s;
+}
+.sso-widget-option:nth-child(5) .sso-widget-option-icon {
+  transition-delay: 0.5s;
+}
+.sso-widget-option:nth-child(6) .sso-widget-option-icon {
+  transition-delay: 0.6s;
+}
+
+/*# sourceMappingURL=sso-main.css.map */

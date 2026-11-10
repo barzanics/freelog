@@ -1,0 +1,39 @@
+
+<svg id="header-bg.svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 386.98 119.71" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <style>
+      .a62d583d-64fc-4578-b0d0-7489042bf723, .b16b3d84-c8b9-4c6e-89e3-a9a053edb3ec {
+        isolation: isolate;
+      }
+
+      .b16b3d84-c8b9-4c6e-89e3-a9a053edb3ec {
+        opacity: 0.6;
+        fill: url(#e947ff0f-026a-4963-8957-8b1c706726c5);
+      }
+
+      .a62d583d-64fc-4578-b0d0-7489042bf723 {
+        opacity: 0.5;
+        fill: url(#b1318ba3-3dc6-4b93-aef3-65d568cb6b07);
+      }
+    </style>
+    <linearGradient id="e947ff0f-026a-4963-8957-8b1c706726c5" x1="-4.79" y1="-240.61" x2="369.42" y2="-337.29" gradientTransform="matrix(1, 0, 0, -1, 0, -277.19)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" class="svg-stop-fifth" stop-opacity="0.8"/>
+      <stop offset="1" class="svg-stop-fifth" stop-opacity="0.98"/>
+    </linearGradient>
+    <linearGradient id="b1318ba3-3dc6-4b93-aef3-65d568cb6b07" x1="124.65" y1="-268.22" x2="250.65" y2="-428.4" gradientTransform="matrix(1, 0, 0, -1, 0, -277.19)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" class="svg-stop-fifth-dark" stop-opacity="0.25"/>
+      <stop offset="0.72" class="svg-stop-fifth-dark" stop-opacity="0.99"/>
+      <stop offset="0.99" class="svg-stop-lightest" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <g id="f32513f7-f488-4450-a535-9a1f3323e454" data-name="Layer 2">
+    <g id="a8d6ac59-48ce-4b07-87f8-a9894fc16545" data-name="Layer 1">
+      <g id="bbb2bb9d-50ab-4206-834e-82765ab3019c" data-name="uuid-2fdffef0-9260-4334-b3de-f794a80bf8e9">
+        <path class="b16b3d84-c8b9-4c6e-89e3-a9a053edb3ec" d="M386.79.31c-52.7,24-103.37,54.21-223.26,54.21C98.3,54.52,37.13,42.78,0,25.29V.36H361c14.21.38,27.77-.93,25.82,0Z"/>
+      </g>
+      <g id="ab425973-9ec0-4b3f-9bb7-9296e17da1f5" data-name="uuid-c4e5181b-6781-4238-b477-d5822a24fbcd">
+        <path class="a62d583d-64fc-4578-b0d0-7489042bf723" d="M247.44,80.48c-18.68,10.46-71.3,32.29-100.4,39.23H0V.36H357.87C321.31,29.32,298.28,52,247.44,80.48Z"/>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,96 @@
+.brztl-timeline-container {
+  background-color: #212121;
+  padding: 8px;
+  border-radius: 10px;
+  color: #ffffff;
+  position: relative;
+  text-align: center;
+}
+
+.brztl-controls-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-top: 10px;
+}
+
+.brztl-current-time {
+  position: absolute;
+  left: 0;
+  font-size: 0.9em;
+  color: #BDBDBD;
+}
+
+.brztl-total-time {
+  position: absolute;
+  right: 0;
+  font-size: 0.9em;
+  color: #BDBDBD;
+}
+
+.brztl-control-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.brztl-control-buttons button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #37474F;
+  color: #ffffff;
+  border: none;
+  font-size: 1em;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+.brztl-control-buttons button:active {
+  transform: scale(0.95);
+}
+.brztl-control-buttons .brztl-playPauseBtn {
+  width: 60px;
+  height: 60px;
+  background-color: #4CAF50;
+}
+.brztl-control-buttons .brztl-stopBtn {
+  background-color: #E53935;
+}
+.brztl-control-buttons .brztl-rewindBtn,
+.brztl-control-buttons .brztl-forwardBtn {
+  background-color: #4CAF50;
+}
+.brztl-control-buttons .brztl-speedBtn {
+  background-color: #607D8B;
+}
+
+.brztl-progress-container {
+  height: 80px;
+  background-color: #2e2e2e;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  margin-top: 10px;
+}
+
+.brztl-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.brztl-progress-fill {
+  height: 100%;
+  width: 0;
+  background-color: #64B5F6;
+  transition: width 0.1s linear;
+}
+
+/*# sourceMappingURL=barzegar-timeline.css.map */

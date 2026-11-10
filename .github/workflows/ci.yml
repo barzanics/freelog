@@ -1,0 +1,19 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ["3.11", "3.12"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: worktracker-src }
+      - uses: actions/setup-python@v5
+        with: { python-version: "${{ matrix.python }}" }
+      - run: pip install PyQt5 openpyxl reportlab cryptography tzdata
+      - name: Tests (headless)
+        env: { QT_QPA_PLATFORM: offscreen }
+        working-directory: worktracker-src
+        run: python -m unittest discover -s worktracker/tests -t .

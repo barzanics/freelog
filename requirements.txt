@@ -1,0 +1,6 @@
+PyQt5>=5.15
+# optional - the app starts without them and only the matching feature is unavailable
+openpyxl>=3.1       # Excel export
+reportlab>=4.0      # PDF invoices
+cryptography>=42    # encrypted backups
+tzdata              # Windows: Tehran timezone data

@@ -1,0 +1,312 @@
+@media print {
+    .container {
+        min-width: 970px !important;
+    }
+    .codeNosazi {
+        background-color: #d0d0d0 !important;
+        background: #d0d0d0 !important;
+        border: 1px solid #d0d0d0 !important;
+    }
+    body {
+        -webkit-print-color-adjust: exact !important;
+    }
+    button{
+        display: none !important;
+    }
+    .rightFormone:nth-child(2n) span, .rightFormTwo:nth-child(2n) span {
+        background-color: #e7e7e7 !important;
+        background: #e7e7e7 !important;
+        border: 1px solid #333 !important;
+    }
+    .rightFormone:nth-child(2n+1) span, .rightFormTwo:nth-child(2n+1) span {
+        background-color: #d0d0d0 !important;
+        background: #d0d0d0 !important;
+        border: 1px solid #999 !important;
+    }
+    .rightFormTwo.requestForm span:first-child{
+        border-bottom: none !important;
+    }
+    .rightFormTwo.requestForm span:last-child{
+        border-top: none !important;
+    }
+    .titleForm {
+        border:1px solid #9e9e9e !important;
+    }
+    .rightFormone.addressForm span {
+        min-height: 47px !important;
+    }
+    .blankSpace {
+        border: 1px solid #9e9e9e !important;
+    }
+
+    .titleForm {
+        background-color:#9e9e9e !important;
+        color: #fff  !important;
+    }
+
+    .blankSpace{
+        background-color: #9e9e9e !important;
+    }
+}
+
+* {direction: rtl !important;}
+
+.clearfix {
+    *zoom: 1;
+}
+
+body{
+    margin: 0 auto;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+
+.main > .row {
+    padding: 10px 20px;
+    border: 2px solid #707070;
+    border-radius: 30px;
+    margin-top: 5px;
+    padding-top: 0;
+}
+.headerPage {
+    
+}
+.headerLogo{
+    padding-right: 0 !important;
+}
+.titlePage h2{
+    font-size: 20px;
+    color: #616161;
+    text-align: center;
+}
+.codeNosazi span {
+    display: inline-block;
+}
+header{
+    padding: 10px 0;
+}
+.codeNosazi {
+    background: #d0d0d0 !important;
+    background-color: #d0d0d0 !important;
+    border-radius: 9px;
+    padding: 5px 20px 10px 0px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #616161;
+    position: relative;
+    height: fit-content;
+    -webkit-print-color-adjust: exact;
+    margin: 6px;
+    top:10px;
+}
+
+.codeNosazi span.titleCode {
+    background: transparent;
+    font-size: 12px;
+    white-space: nowrap;
+    position: relative;
+    top: 5px;
+}
+.codeNum span{
+    background: #fff;
+    padding: 5px 10px;
+    border: 1px solid #aaa;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+.codeNum span {
+    background: #fff;
+    border: 1px solid #aaa;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    padding: 2px 12px;
+    font-weight: 900;
+    font-size: 13px;
+    position: relative;
+}
+.titleCode{
+    width: 65px;
+    float: right;
+}
+.codeNum{
+    width: calc(100% - 65px);
+    direction: ltr;
+    float: left;
+}
+.infoPage {
+    margin: 0;
+    border: 2px solid #d0d0d0;
+    border-radius: 10px;
+}
+.infoPage div {
+    display: inline-block;
+    padding: 4px;
+    font-size: 13px;
+    font-weight: normal;
+    margin: 0 15px;
+    color: #000;
+}
+.infoTitle:first-child {
+    margin-right: 0;
+}
+.titleForm{
+    background-color: #9e9e9e;
+    color: #fff;
+    font-weight: bold;
+    font-size: 13px;
+    text-align: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 5px 0;
+    margin: 5px 0;
+}
+.rightFormone, .rightFormTwo {
+    margin: 5px 0;
+}
+.rightFormone span {
+    width: calc(50% - 2.5px);
+    display: inline-block;
+    padding: 2px 10px;
+}
+.rightFormone.addressForm span {
+    min-height: 52px;
+}
+.rightFormone.addressForm{
+    min-height: 20px;
+}
+.rightFormone.addressForm span:first-child{
+    width: 15%;
+    margin: 0;
+}
+.rightFormone.addressForm span:last-child{
+    width: calc(85% - 5px);
+    margin: 0;
+    float: left;
+}
+.rightFormone:nth-child(odd) span, .rightFormTwo:nth-child(odd) span {
+    background-color: #d0d0d0;
+}
+.rightFormone:nth-child(even) span,  .rightFormTwo:nth-child(even) span{
+    background-color: #e7e7e7;
+}
+.ownerForm{
+    padding-left: 0;
+}
+.rightFormTwo span {
+    display: inline-block;
+    padding: 2px 10px;
+}
+.rightFormTwo span:first-child{
+    width: calc(25% - 4px);
+    white-space: nowrap;
+}
+.rightFormTwo span:last-child{
+    width: 75%;
+}
+.rightFormTwo.firstRow span, .rightFormTwo.requestForm span{
+    width: 100%;
+    margin-right: 0;
+}
+.rightFormTwo.addressFormT span {
+    min-height: 42px;
+    float: right;
+}
+.rightFormTwo.addressFormT span:last-child {
+    float: left;
+    margin-bottom: 7px;
+}
+.rightFormTwo.addressFormT {
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+}
+.rightFormTwo.requestForm span:last-child{
+    height: 105px;
+    overflow: hidden;
+}
+.rightFormTwo.firstRow span {
+    text-align: center;
+    font-weight: 900;
+}
+.rightFormTwo.requestForm, .rightFormone.addressForm {
+    margin-bottom: 5px;
+}
+.blankSpace{
+    background-color: #9e9e9e;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    height: 15px;
+}
+.footerPage{
+    margin-top: 10px;
+    display: inline-block;
+    width: 100%;
+}
+.rightFormTwo.requestForm {
+    float: right;
+    margin-top: -8px;
+    margin-bottom: 0;
+    width: 100%;
+}
+.SignatureBox{
+    border: 2px solid #d0d0d0;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    height: 110px;
+    padding: 5px 15px;
+}
+.location_internal_box{
+    width: 320px;
+    height: 30px;
+    bottom: 5px;
+    right: calc(50% - 160px);
+    z-index: 1048;
+}
+.location_internal_box > span{
+    height: 30px;
+}
+.center-icon-map{
+    position: absolute;
+    right: calc(50% - calc(27px / 2));
+    top: calc(50% - calc(41px / 2));
+    z-index: 1040;
+}
+.jq-ry-container>.jq-ry-group-wrapper>.jq-ry-group.jq-ry-rated-group
+{
+    direction: ltr !important;
+}
+@media only screen and (max-width: 991px) {
+
+	.titlePage h2 {
+		font-size: 15px;
+	}
+	.codeNum span {
+		padding: 4px 8px;
+		font-size: 10px;
+	}
+	.codeNosazi span.titleCode {
+		font-size: 10px;
+		top: 7px;
+	}
+	.titleCode {
+		width: 50px;
+	}
+	.codeNum {
+		width: calc(100% - 50px);
+	}
+}
+@media print {
+    .codeNosazi {
+        background-color: #d0d0d0 !important;
+        background: #d0d0d0 !important;
+    }
+    body {
+        -webkit-print-color-adjust: exact !important;
+    }
+    button{
+          display: none !important;
+      }
+}

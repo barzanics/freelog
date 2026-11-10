@@ -1,0 +1,13 @@
+[project]
+name = "worktracker"
+version = "6.0.0"
+description = "Offline-first, lightweight Persian work tracker"
+requires-python = ">=3.10"
+dependencies = ["PyQt5>=5.15"]
+[project.optional-dependencies]
+full = ["openpyxl>=3.1", "reportlab>=4.0", "cryptography>=42"]
+dev = ["pytest", "pytest-qt", "pytest-cov", "black", "flake8", "mypy"]
+[project.gui-scripts]
+worktracker = "worktracker.main:main"
+[tool.black]
+line-length = 130

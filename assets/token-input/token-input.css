@@ -1,0 +1,228 @@
+/* Example tokeninput style #1: Token vertical list*/
+
+ul.token-input-list11 {
+    overflow: hidden;
+}
+
+.token-input-list{
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 0.75rem;
+    font-size: 14px;
+    width: 100%;
+    transition: all 200ms;
+    background-color: rgb(var(--rgb-lighter)) !important;
+    border: 1px solid rgb(var(--rgb-light)) !important;
+    color: rgb(var(--rgb-dark)) !important;
+    min-height: 40px;
+    align-items: center;
+    padding: 0 8px;
+}
+
+
+.token-input-list input {
+    color: #707070;
+    font-size: 14px !important;
+    font-weight: 900;
+    border: none !important;
+    padding: 0px;
+    font-weight: normal;
+}
+
+ul.token-input-list li {    
+    list-style-type: none !important;
+    float: right !important;
+    display: flex;
+    align-items: center;
+    direction: rtl !important;
+    text-align: right;
+    height: 100%;
+}
+
+ul.token-input-list55 {
+    overflow: hidden;
+    cursor: text;
+    z-index: 4000;
+    list-style-type: non !importante;
+    clear: left !important;
+    text-decoration: none !important;
+    vertical-align: middle !important;
+    direction: rtl !important;
+    font-size: 12px;
+    border: 1px solid #DBD7D7;
+    border-radius: 4px 0px 0px 4px;
+    width: 100%;
+    min-height: 32px !important;
+    margin: 0px !important;
+}
+ul.token-input-list5465 li {
+    list-style-type: none !important;
+    float: right !important;
+}
+
+ul.token-input-list li input {
+    border: 0;
+    padding: 3px 8px;
+    background-color: rgb(var(--rgb-lighter)) !important;
+    -webkit-appearance: caret;
+    width: 100% !important;
+}
+
+li.token-input-token {
+    background-color: rgb(var(--rgb-first));
+    padding: 4px 12px;
+    border-radius: 4px;
+    color: rgb(var(--rgb-lightest));
+    display: flex;
+    align-items:center;
+    gap: 8px;
+    margin: 4px;
+}
+
+li.token-input-token select {
+    border: 1px solid rgb(var(--rgb-light));
+    border-radius: 6px;
+    color: rgb(var(--rgb-lightest));
+    background-color: rgb(var(--rgb-first));
+    appearance: none;
+    padding: 0 8px;
+    padding-left: 32px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    margin-right: 6px;
+    font-size: 12px;
+}
+
+li.token-input-token select:focus {
+    border-color: rgb(var(--rgb-light)) !important;
+}
+
+li.token-input-input-token {
+    width: 100%;
+    flex: 1;
+}
+
+li.token-input-token p {
+    color: rgb(var(--rgb-lightest));
+    margin: 0;
+}
+
+li.token-input-token span {
+    color: rgb(var(--rgb-lightest));
+    cursor: pointer !important;
+}
+
+li.token-input-token.token-input-highlighted-token {
+    box-shadow: inset 0 0 0 1000px rgba(var(--rgb-lightest), 0.2);
+}
+
+li.token-input-selected-token span {
+    color: rgb(var(--rgb-lightest)) !important;
+}
+
+li.token-input-token span.token-input-delete-token:hover {
+    background-color: rgb(var(--rgb-red-600)) !important;
+}
+
+li.token-input-token span.token-input-delete-token {
+    height: min-content;
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    transition: all 200ms;
+}
+
+li.token-input-token img {
+    border-radius: 6px;
+}
+
+li.token-input-token span.token-input-delete-token i {
+    margin-top: 1px;
+}
+
+div.token-input-dropdown {
+    position: absolute;
+    width: 200px;
+    background-color: rgb(var(--rgb-ninth-lighter));
+    overflow: hidden;
+    border: 1px solid rgb(var(--rgb-light));
+    cursor: default;
+    font-size: 12px;
+    font-family: "IRANSans";
+    z-index: 100000;
+    border-radius: 8px;
+}
+
+div.token-input-dropdown p {
+    margin: 0;
+    padding: 8px 12px;
+    font-weight: bold;
+    color: rgb(var(--rgb-first));
+}
+
+
+div.token-input-dropdown img {
+    border-radius: 6px;
+}
+
+div.token-input-dropdown ul {
+    margin: 0;
+    padding: 0;
+}
+
+div.token-input-dropdown ul li {
+    padding: 8px 16px;
+    list-style-type: none;
+    border-bottom: 0.7px solid rgba(var(--rgb-darkest), 0.1);
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 200ms;
+    color: rgb(var(--rgb-darkest));
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+div.token-input-dropdown ul li span {
+    display: block;
+    list-style-type: none;
+    line-height: 30px;
+}
+
+div.token-input-dropdown ul li:nth-last-of-type(1) {
+    border-bottom: none !important;
+}
+
+div.token-input-dropdown ul li.token-input-dropdown-item {}
+
+div.token-input-dropdown ul li.token-input-dropdown-item select, div.token-input-dropdown ul li.token-input-dropdown-item2 select {
+    border-radius: 0.75rem;
+    font-size: 14px;
+    width: 100%;
+    transition: all 200ms;
+    background-color: rgb(var(--rgb-lighter)) !important;
+    border-color: rgb(var(--rgb-light)) !important;
+    color: rgb(var(--rgb-dark)) !important;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    appearance: none;
+    width: fit-content;
+    margin-right: auto;
+    padding: 6px 16px;
+    padding-left: 32px;
+}
+
+div.token-input-dropdown ul li em {
+    font-weight: bold;
+    font-style: italic;
+}
+
+div.token-input-dropdown ul li.token-input-selected-dropdown-item {
+    background-color: rgba(var(--rgb-darkest), 0.04);
+    color: rgb(var(--rgb-first-darker));
+    text-decoration: none;
+    vertical-align: middle;
+}
