@@ -54,7 +54,7 @@ class ModelFieldTests(unittest.TestCase):
 
     def test_legacy_import_still_works_with_new_columns(self):
         # migration v4 columns must not break row inserts used by the importer
-        db = Database(); self.assertEqual(db.version, 5)
+        db = Database(); self.assertEqual(db.version, len(__import__('worktracker.core.database', fromlist=['MIGRATIONS']).MIGRATIONS))
         db.save(Project(name="a")); self.assertTrue(db.integrity_ok())
 
 

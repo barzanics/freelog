@@ -22,7 +22,8 @@ from ..services.ledger import ACTIVE, IDLE, PASSIVE, Ledger, hour_floor
 from ..services.idle import system_idle_seconds
 from ..services.pomodoro import PomodoroConfig
 from ..services.prompter import PromptConfig, Prompter
-from ..services.screenshots import ScreenshotStore, should_capture
+from ..services import catchup as catchup_svc, context as ctx_svc
+from ..services.screenshots import ScreenshotStore, effective_interval, should_capture, within_schedule
 from .strings import S
 
 log = logging.getLogger("worktracker.runtime")
@@ -100,6 +101,7 @@ class Runtime:
         self.prompter.arm() if self.prompter.next_due is None else None
         QTimer.singleShot(4000, _safe(self._startup_shot))                    # the very first picture is taken right after launch
         QTimer.singleShot(25000, _safe(self.auto_backup))
+        QTimer.singleShot(8000, _safe(self.morning_check))
 
     def stop(self) -> None:
         for t in self.timers.values():
@@ -213,8 +215,13 @@ class Runtime:
     def _shot_tick(self) -> None:
         if not self.db.get_setting("shots_enabled", False):
             return
+        g = self.db.get_setting
+        now = now_utc()
+        if not within_schedule(to_tehran(now), int(g("shots_from_hour", 0)), int(g("shots_to_hour", 24)), g("shots_days_off", [])):
+            return                                                         # outside the hours / days you chose for yourself
         last = self.shots.last()
-        if should_capture(now_utc(), last.at if last else None, int(self.db.get_setting("shots_interval", 60)), self.engaged_within(2), bool(self.db.get_setting("shots_require_engaged", True))):
+        interval = effective_interval(int(g("shots_interval", 60)), int(g("shots_jitter", 0)), last.at.isoformat() if last else "first")
+        if should_capture(now, last.at if last else None, max(1, int(round(interval))), self.engaged_within(2), bool(g("shots_require_engaged", True))):
             self.capture_now(force=False)
 
     def _startup_shot(self) -> None:
@@ -222,14 +229,24 @@ class Runtime:
             return
         last = self.shots.last()
         if last is None or (now_utc() - last.at) > dt.timedelta(minutes=2):
-            shot, why = self.shots.capture_result(self.last_win[0], self.last_win[1], force=False)
+            shot, why = self.shots.capture_result(self.last_win[0], self.last_win[1], force=False, context=self._context())
             self.last_capture_reason = why
             log.info("startup screenshot: %s", why)
 
     last_capture_reason = "ok"
 
+    def _context(self) -> str:
+        """Precise 'what was open' line (active Explorer folder / browser tab / editor file) saved with the screenshot - only when you allow it."""
+        if not self.db.get_setting("shots_record_context", True):
+            return ""
+        try:
+            return ctx_svc.describe(self.last_win[0], self.last_win[1])["text"]
+        except Exception:  # noqa: BLE001 - best effort
+            log.debug("context lookup failed", exc_info=True)
+            return ""
+
     def capture_now(self, force: bool = True):
-        s, why = self.shots.capture_result(self.last_win[0], self.last_win[1], force=force)
+        s, why = self.shots.capture_result(self.last_win[0], self.last_win[1], force=force, context=self._context())
         self.last_capture_reason = why
         if s is not None and self.win.theme.fx is not None:
             self.win.theme.fx.play("pop", 0.5)
@@ -269,7 +286,21 @@ class Runtime:
             if self.win.current_key() == "routines":
                 self.win.refresh_visible()
 
+    def morning_check(self) -> None:
+        """Once a day: tell you what slipped and what to do first (the Catch-up page has the full plan)."""
+        self.win.update_catchup_badge()
+        if not catchup_svc.should_show_briefing(self.db):
+            return
+        b = catchup_svc.morning_briefing(self.db)
+        catchup_svc.mark_briefing_shown(self.db)
+        if b["has_work"]:
+            self.win.toast("🧭 " + b["title"] + " — " + " · ".join(b["lines"][:2]))
+            if self.win.theme.fx is not None:
+                self.win.theme.fx.play("warn")
+
     def _hour_tick(self) -> None:
+        self.win.update_catchup_badge()
+        self.morning_check()
         now = to_tehran(now_utc())
         if self._last_tip_hour != now.hour:
             first = self._last_tip_hour is None

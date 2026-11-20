@@ -52,7 +52,7 @@ class PopDialog(QDialog):
     """Frameless glass panel that springs in. Subclasses fill ``self.body`` and ``self.footer``."""
 
     def __init__(self, win, title: str, icon_name: str = "plus", width: int = 780, top: bool = False, closable: bool = True) -> None:
-        flags = Qt.Dialog | Qt.FramelessWindowHint | (Qt.WindowStaysOnTopHint if top else 0)
+        flags = Qt.Dialog | Qt.FramelessWindowHint | ((Qt.WindowStaysOnTopHint | Qt.Tool) if top else 0)      # top windows are Tool windows: no second taskbar button
         super().__init__(None if top else win, flags)
         self.win, self.theme, self.db = win, win.theme, win.db
         self.setAttribute(Qt.WA_TranslucentBackground)
@@ -234,7 +234,11 @@ class TaskDialog(PopDialog):
         self.suggest_row = QWidget(); self.suggest_flow = FlowLayout(self.suggest_row)
         self.desc = QPlainTextEdit(); self.desc.setPlaceholderText(S["description"]); self.desc.setFixedHeight(92)
         self.project = _combo([(S["no_project"], None)] + [(f"{p.icon} {p.name}", p.id) for p in projects])
-        newp = chip_button(S["new_project"]); newp.clicked.connect(self._new_project)
+        newp = chip_button(S["full_project"]); newp.clicked.connect(self._new_project)
+        qp = chip_button("＋ " + S["quick_project"]); qp.clicked.connect(lambda: (self.qp_row.setVisible(not self.qp_row.isVisible()), self.qp_edit.setFocus()))
+        self.qp_edit = QLineEdit(placeholderText=S["quick_project_hint"]); self.qp_edit.returnPressed.connect(self._quick_project)
+        okq = chip_button(S["add"]); okq.clicked.connect(self._quick_project)
+        self.qp_row = QWidget(); ql = QHBoxLayout(self.qp_row); ql.setContentsMargins(0, 0, 0, 0); ql.addWidget(self.qp_edit, 1); ql.addWidget(okq); self.qp_row.hide()
         cats = taxonomy.categories(db.get_setting("custom_categories", {}))
         self.category = _combo([(f"{v.get('icon', '📋')}  {v['name']}", k) for k, v in cats.items()])
         self.subcategory = QComboBox(); self.subcategory.setEditable(True)
@@ -245,7 +249,7 @@ class TaskDialog(PopDialog):
         self.assignee = _combo([(S["nobody"], "")] + [(m.name, m.id) for m in members])
         self.color = ColorSwatches(); self.icon_pick = IconPicker()
         s1 = Section(S["sec_basic"]); s1.add(S["title"], self.title); s1.add("", self.suggest_row); s1.add(S["description"], self.desc)
-        row = QWidget(); rl = QHBoxLayout(row); rl.setContentsMargins(0, 0, 0, 0); rl.addWidget(self.project, 1); rl.addWidget(newp); s1.add(S["project"], row)
+        row = QWidget(); rl = QHBoxLayout(row); rl.setContentsMargins(0, 0, 0, 0); rl.addWidget(self.project, 1); rl.addWidget(qp); rl.addWidget(newp); s1.add(S["project"], row); s1.add("", self.qp_row)
         s1.pair(S["category"], self.category, S["subcategory"], self.subcategory)
         s2 = Section(S["sec_status"]); s2.add(S["priority"], self.priority); s2.add(S["status"], self.column); s2.add(S["tags"], self.tags)
         s2.pair(S["assignee"], self.assignee, "", QWidget())
@@ -340,6 +344,22 @@ class TaskDialog(PopDialog):
                 b = chip_button("💡 " + s); b.clicked.connect(lambda _c=False, x=s: self.title.setText(x)); self.suggest_flow.addWidget(b)
         except Exception:  # noqa: BLE001 - suggestions are a nicety
             log.debug("suggest failed", exc_info=True)
+
+    def _quick_project(self) -> None:
+        """One field, Enter: the project exists and is selected - no form (use the full form for client, budget, dates...)."""
+        name = self.qp_edit.text().strip()
+        if not name:
+            return
+        for i in range(self.project.count()):                                   # same name (any case) -> just select it
+            if self.project.itemText(i).split(" ", 1)[-1].strip().lower() == name.lower():
+                self.project.setCurrentIndex(i); self.qp_row.hide(); self.qp_edit.clear(); self.win.toast(S["quick_project_exists"]); return
+        n = len(self.db.all(Project)) + 1
+        p = Project(name=name[:120], code=f"PRJ-{n:03d}", icon="📁", color="#7AA2F7")
+        self.db.save(p)
+        self.project.addItem(f"{p.icon} {p.name}", p.id); self.project.setCurrentIndex(self.project.count() - 1)
+        self.qp_row.hide(); self.qp_edit.clear(); self.win.toast(S["quick_project_added"])
+        if self.theme.fx is not None:
+            self.theme.fx.play("success")
 
     def _new_project(self) -> None:
         dlg = ProjectDialog(self.win)
@@ -607,11 +627,30 @@ class ClientDialog(PopDialog):
         self.tags = ChipInput(); self.notes = QPlainTextEdit(); self.notes.setFixedHeight(64)
         a = Section(S["sec_basic"]); a.pair(S["name"], self.name, S["company"], self.company); a.pair(S["email"], self.email, S["phone"], self.phone); a.add(S["address"], self.address)
         b = Section(S["sec_money"]); b.pair(S["hourly_rate"], self.rate, S["currency"], self.currency); b.add(S["tags"], self.tags); b.add(S["notes"], self.notes)
-        self.body.addWidget(self.scroll_page(a, b), 1)
+        self.tz = QComboBox(); self.tz.setEditable(True)
+        for z in ("America/New_York", "America/Chicago", "America/Denver", "America/Los_Angeles", "America/Toronto", "Europe/London", "Europe/Berlin", "Asia/Dubai", "Asia/Tehran", "UTC"):
+            self.tz.addItem(z)
+        self.country = QLineEdit(); self.country.setText("US"); self.contact = QLineEdit()
+        self.model = _combo([("Hourly", "hourly"), ("Fixed price", "fixed"), ("Retainer", "retainer"), ("Milestone", "milestone")])
+        self.rounding = _combo([("—", 0), ("6 min", 6), ("15 min", 15), ("30 min", 30), ("60 min", 60)])
+        self.retainer = QDoubleSpinBox(); self.retainer.setRange(0, 1000); self.retainer.setSuffix(" h")
+        self.tone = Segmented([(S["cl_tone_we"], "we"), (S["cl_tone_i"], "i")], wrap=False); self.week = Segmented([(S["cl_week_sun"], "sun"), (S["cl_week_mon"], "mon")], wrap=False)
+        self.terms = QSpinBox(); self.terms.setRange(0, 365); self.terms.setValue(15); self.tax = QDoubleSpinBox(); self.tax.setRange(0, 60); self.tax.setDecimals(2)
+        self.vis = _combo([(S["cl_vis_billable"], "billable"), (S["cl_vis_flagged"], "flagged")]); self.silence = QSpinBox(); self.silence.setRange(1, 90); self.silence.setValue(7)
+        c = Section(S["cl_adv"]); c.pair(S["cl_tz"], self.tz, S["cl_country"], self.country); c.pair(S["cl_contact"], self.contact, S["cl_model"], self.model); c.pair(S["cl_round"], self.rounding, S["cl_retainer"], self.retainer)
+        c.pair(S["cl_terms"], self.terms, S["cl_tax"], self.tax); c.pair(S["cl_tone"], self.tone, S["cl_week"], self.week); c.pair(S["cl_vis"], self.vis, S["cl_silence"], self.silence)
+        self.body.addWidget(self.scroll_page(a, b, c), 1)
         cancel = GlassButton(S["cancel"], self.theme); cancel.clicked.connect(self.reject); ok = GlassButton(S["save"], self.theme, primary=True, icon="check"); ok.clicked.connect(self._save); self.buttons(cancel, ok)
         if client:
             self.name.setText(client.name); self.company.setText(client.company); self.email.setText(client.email); self.phone.setText(client.phone); self.address.setPlainText(client.address)
             self.rate.setValue(client.default_rate); self.currency.setCurrentIndex(max(0, self.currency.findData(client.currency))); self.tags.setTags(client.tags); self.notes.setPlainText(client.notes)
+            from ..core.crm import Store
+            x = Store(self.db).get("clients", client.id) or {}
+            st_ = x.get("settings") or {}
+            self.tz.setEditText(x.get("timezone") or "America/New_York"); self.country.setText(x.get("country") or "US"); self.contact.setText(x.get("contact_name") or "")
+            self.model.setCurrentIndex(max(0, self.model.findData(x.get("billing_model") or "hourly"))); self.rounding.setCurrentIndex(max(0, self.rounding.findData(int(x.get("rounding_min") or 0))))
+            self.retainer.setValue(float(x.get("retainer_hours") or 0)); self.tone.setValue(st_.get("tone", "we"), emit=False); self.week.setValue(st_.get("week_start", "sun"), emit=False)
+            self.terms.setValue(int(st_.get("terms_days", 15))); self.tax.setValue(float(st_.get("tax_percent", 0))); self.vis.setCurrentIndex(max(0, self.vis.findData(st_.get("visibility", "billable")))); self.silence.setValue(int(st_.get("silence_days", 7)))
 
     def _save(self) -> None:
         if not self.name.text().strip():
@@ -622,7 +661,14 @@ class ClientDialog(PopDialog):
         c = self.client or Client(name=self.name.text().strip())
         c.name, c.company, c.email, c.phone, c.address = self.name.text().strip(), self.company.text().strip(), em, self.phone.text().strip(), self.address.toPlainText()
         c.default_rate, c.currency, c.tags, c.notes = self.rate.value(), self.currency.currentData() or "IRR", self.tags.tags(), self.notes.toPlainText()
-        self.db.save(c); self.saved = c; self.accept()
+        self.db.save(c); self.saved = c
+        from ..core.crm import Store
+        old = (Store(self.db).get("clients", c.id) or {}).get("settings") or {}
+        Store(self.db).update("clients", c.id, timezone=self.tz.currentText().strip() or "America/New_York", country=self.country.text().strip() or "US", contact_name=self.contact.text().strip(),
+                              billing_model=self.model.currentData() or "hourly", rounding_min=int(self.rounding.currentData() or 0), retainer_hours=self.retainer.value(),
+                              settings={**old, "tone": self.tone.value(), "week_start": self.week.value(), "terms_days": self.terms.value(), "tax_percent": self.tax.value(), "visibility": self.vis.currentData() or "billable",
+                                        "silence_days": self.silence.value()})
+        self.accept()
 
 
 class MemberDialog(PopDialog):

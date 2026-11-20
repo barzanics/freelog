@@ -39,3 +39,11 @@
   project breakdown from an outline (phases/tasks/sub-tasks, templates), task split with shared estimate, project split. Dialogs are sized before they are placed (footer buttons stay inside the window);
   pages scroll instead of squashing cards; dashboard has 1-3 columns and minimum card heights.
 - Fixed: a task deleted locally could be re-imported from Google before the remote delete was sent; semicolon-separated quick lists were read as sub-tasks.
+
+## 7.0.0 - FreeLog
+- Product renamed **FreeLog** (author Amirhossein Barzegar, company barzanics); logo, multi-size icons (png / ico / icns), taskbar identity (AppUserModelID), tray icon with menu, Desktop / Start-menu shortcuts, MIT license, pyproject.
+- Client reporting edition: migration v6, weighted progress + RAG health with reasons, client health score, silence alert, promises, onboarding, meetings, risks, deliverable approvals, change log; report engine (daily / weekly / milestone / invoice / snapshot) with US locale, charts, HTML + PDF + Markdown + JSON, privacy gate; client reports page; client dialog fields.
+- Screenshots record the active folder / tab / file (migration v7); private schedule (hours, days off, jitter, 1-minute minimum).
+- Catch-up: scoring, five actions, capacity-aware plan, honest postponement log, morning briefing, missed routine check boxes.
+- Calendar engine (migration v8): recurring events, reminders (day / hour / minutes / start), safe links, auto-open, quick text parser, day analysis, geometry, operations. Hourly check-in service.
+- Floating bubble glow can no longer clip into a square; quick project in the task dialog.

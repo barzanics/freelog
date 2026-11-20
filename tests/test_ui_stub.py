@@ -82,7 +82,7 @@ class UiStubTests(unittest.TestCase):
     def test_page_builders_and_nav_agree(self):
         keys = self.app.PAGE_KEYS
         self.assertEqual(len(keys), len(set(keys))); self.assertEqual(keys[0], "dashboard"); self.assertEqual(keys[-1], "settings")
-        for need in ("today", "tasks", "lists", "board", "calendar", "reports", "screenshots", "habits", "routines", "goals", "projects"):
+        for need in ("today", "tasks", "catchup", "client_reports", "lists", "board", "calendar", "reports", "screenshots", "habits", "routines", "goals", "projects"):
             self.assertIn(need, keys)
 
     # ---------------------------------------------------------------- dialogs
@@ -341,6 +341,58 @@ class UiStubTests(unittest.TestCase):
         self.assertEqual(rt.ledger.answered()[h.isoformat()], "logged"); self.assertEqual(rt.ledger.pending(min_unlogged_sec=60), [])
         pn._refresh_hour_strip(self.win); self.assertEqual(len(self.win.hour_strip.rows), 24)
         rt._sample(); rt._sample()                                                                             # the sampler runs (screen grab is unavailable in the stand-in -> no delta)
+        self.assertNoLoggedErrors()
+
+    def test_catchup_page_actions_and_the_morning_briefing(self):
+        import datetime as _dt
+        from worktracker.core.models import TimeEntry as TE, Status as St
+        from worktracker.core.persian import now_utc as _now
+        from worktracker.services import catchup as cs
+        from worktracker.ui import catchup_ui as cuu
+        old = _now() - _dt.timedelta(days=4)
+        a = TE(title="late report", start_utc=old, status=St.PLANNED, due_utc=old, estimated_min=45, priority=2); self.db.save(a)
+        b = TE(title="pushed thrice", start_utc=old, status=St.PLANNED, estimated_min=20, extra={"postponed": 3}); self.db.save(b)
+        self.win.goto("catchup"); cuu.refresh_catchup(self.win)
+        self.assertGreaterEqual(cs.scan(self.db)["counts"]["total"], 2)
+        cuu.apply_plan(self.win); self.assertEqual(cs.scan(self.db)["counts"]["missed_blocks"], 0)
+        self.assertGreaterEqual(self.win.update_catchup_badge(), 1)
+        self.db.set_setting("catchup_briefing_hour", 0)                                     # do not depend on the time of day the test runs
+        self.win.runtime.morning_check(); self.assertEqual(self.db.get_setting("catchup_last_briefing") is not None, True)
+        r = cs.postpone(self.db, a.id, "tomorrow"); self.assertEqual(r["count"], 1); self.win.refresh_all()
+        self.assertNoLoggedErrors()
+
+    def test_quick_project_inside_the_task_dialog(self):
+        from worktracker.core.models import Project
+        from worktracker.ui.dialogs import TaskDialog
+        d = TaskDialog(self.win); n = len(self.db.all(Project))
+        d.qp_edit.setText("  Brand new client site  "); d._quick_project()
+        ps = self.db.all(Project); self.assertEqual(len(ps), n + 1); self.assertEqual(ps[-1].name, "Brand new client site"); self.assertTrue(ps[-1].code.startswith("PRJ-"))
+        d.qp_edit.setText("   "); d._quick_project(); self.assertEqual(len(self.db.all(Project)), n + 1)                    # blank: nothing happens
+        self.assertNoLoggedErrors()
+
+    def test_client_reports_page_generates_edits_approves_and_exports(self):
+        import tempfile
+        from pathlib import Path
+        from worktracker.core.models import Project, TimeEntry
+        from worktracker.core.persian import now_utc as _now
+        from worktracker.ui import client_reports_ui as crp
+        from worktracker.reports import service
+        p = self.db.all(Project)[0]; self.db.save(TimeEntry(title="Homepage", start_utc=_now(), end_utc=_now(), project_id=p.id, billable=True))
+        self.win.goto("client_reports"); crp.refresh_client_reports(self.win)
+        r = crp.generate(self.win, p.id, "weekly"); self.assertIsNotNone(r); self.assertTrue(r["number"].startswith("WR-"))
+        crp.save_summary(self.win, r["id"], "Hand written summary."); crp.approve(self.win, r["id"], "Hand written summary.")
+        row = service.get(self.db, r["id"]); self.assertEqual((row["status"], row["summary"]), ("approved", "Hand written summary."))
+        out = Path(tempfile.mkdtemp()) / "r.pdf"; self.assertEqual(crp.export_pdf(self.win, str(out), r["id"]), out); self.assertEqual(out.read_bytes()[:5], b"%PDF-")
+        self.assertIsNone(crp.generate(self.win, p.id, "milestone"))                                                  # no milestone chosen: a friendly toast, no crash
+        self.assertNoLoggedErrors()
+
+    def test_client_dialog_saves_the_reporting_fields(self):
+        from worktracker.core.crm import Store
+        from worktracker.ui.dialogs import ClientDialog
+        d = ClientDialog(self.win); d.name.setText("Acme Inc"); d.tz.setEditText("America/Chicago"); d.country.setText("US"); d.terms.setValue(30); d.tax.setValue(8.25); d.retainer.setValue(40)
+        d._save(); c = d.saved; x = Store(self.db).get("clients", c.id)
+        self.assertEqual((x["timezone"], x["retainer_hours"], x["settings"]["terms_days"], x["settings"]["tax_percent"]), ("America/Chicago", 40.0, 30, 8.25))
+        d2 = ClientDialog(self.win, c); self.assertEqual((d2.tz.currentText(), d2.terms.value(), d2.tax.value()), ("America/Chicago", 30, 8.25))
         self.assertNoLoggedErrors()
 
     def test_sankey_layout_and_date_parsing(self):

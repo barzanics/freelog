@@ -133,6 +133,60 @@ MIGRATIONS: List[str] = [
         covers_from TEXT, covers_to TEXT);
     CREATE INDEX idx_prompt_time ON prompt_log(shown_at);
     """,
+
+    # v6: client-reporting edition - client/project/milestone/task extras + reports, feedback, promises, meetings, risks, deliverables, onboarding, change log, portal
+    """
+    ALTER TABLE clients ADD COLUMN timezone TEXT DEFAULT 'America/New_York';
+    ALTER TABLE clients ADD COLUMN country TEXT DEFAULT 'US';
+    ALTER TABLE clients ADD COLUMN billing_model TEXT DEFAULT 'hourly';
+    ALTER TABLE clients ADD COLUMN contact_name TEXT DEFAULT '';
+    ALTER TABLE clients ADD COLUMN logo_path TEXT DEFAULT '';
+    ALTER TABLE clients ADD COLUMN status TEXT DEFAULT 'active';
+    ALTER TABLE clients ADD COLUMN rounding_min INTEGER DEFAULT 0;
+    ALTER TABLE clients ADD COLUMN retainer_hours REAL DEFAULT 0;
+    ALTER TABLE clients ADD COLUMN settings TEXT DEFAULT '{}';
+    ALTER TABLE projects ADD COLUMN report_settings TEXT DEFAULT '{}';
+    ALTER TABLE projects ADD COLUMN baseline TEXT DEFAULT '{}';
+    ALTER TABLE projects ADD COLUMN health TEXT DEFAULT '';
+    ALTER TABLE projects ADD COLUMN health_reason TEXT DEFAULT '';
+    ALTER TABLE milestones ADD COLUMN ord INTEGER DEFAULT 0;
+    ALTER TABLE milestones ADD COLUMN weight REAL DEFAULT 1;
+    ALTER TABLE milestones ADD COLUMN status TEXT DEFAULT 'pending';
+    ALTER TABLE milestones ADD COLUMN description TEXT DEFAULT '';
+    ALTER TABLE milestones ADD COLUMN acceptance_criteria TEXT DEFAULT '';
+    ALTER TABLE entries ADD COLUMN visible_to_client INTEGER DEFAULT 0;
+    ALTER TABLE entries ADD COLUMN client_note TEXT DEFAULT '';
+    CREATE TABLE client_reports (id TEXT PRIMARY KEY, project_id TEXT REFERENCES projects(id) ON DELETE CASCADE, type TEXT NOT NULL, number TEXT DEFAULT '', period_start TEXT, period_end TEXT,
+        generated_at TEXT, payload TEXT DEFAULT '{}', html_path TEXT DEFAULT '', pdf_path TEXT DEFAULT '', summary TEXT DEFAULT '', status TEXT DEFAULT 'draft', sent_at TEXT, recipients TEXT DEFAULT '[]');
+    CREATE INDEX idx_client_reports_project ON client_reports(project_id, generated_at);
+    CREATE TABLE report_sends (id TEXT PRIMARY KEY, report_id TEXT REFERENCES client_reports(id) ON DELETE CASCADE, at TEXT, to_addr TEXT, subject TEXT, ok INTEGER DEFAULT 0, error TEXT DEFAULT '',
+        opened_count INTEGER DEFAULT 0, first_opened_at TEXT, last_opened_at TEXT, message_id TEXT DEFAULT '');
+    CREATE TABLE client_feedback (id TEXT PRIMARY KEY, report_id TEXT, project_id TEXT, client_id TEXT, rating INTEGER, comment TEXT DEFAULT '', received_at TEXT, kind TEXT DEFAULT 'report');
+    CREATE TABLE promises (id TEXT PRIMARY KEY, client_id TEXT REFERENCES clients(id) ON DELETE CASCADE, project_id TEXT, text TEXT NOT NULL, due TEXT, status TEXT DEFAULT 'open',
+        created_at TEXT, done_at TEXT, notified INTEGER DEFAULT 0);
+    CREATE TABLE meetings (id TEXT PRIMARY KEY, client_id TEXT REFERENCES clients(id) ON DELETE CASCADE, project_id TEXT, at TEXT, minutes INTEGER DEFAULT 0, summary TEXT DEFAULT '',
+        action_items TEXT DEFAULT '[]', attendees TEXT DEFAULT '[]');
+    CREATE TABLE risks (id TEXT PRIMARY KEY, project_id TEXT REFERENCES projects(id) ON DELETE CASCADE, title TEXT NOT NULL, probability INTEGER DEFAULT 3, impact INTEGER DEFAULT 3,
+        mitigation TEXT DEFAULT '', status TEXT DEFAULT 'open', created_at TEXT, visible INTEGER DEFAULT 0);
+    CREATE TABLE deliverables (id TEXT PRIMARY KEY, project_id TEXT REFERENCES projects(id) ON DELETE CASCADE, milestone_id TEXT, title TEXT NOT NULL, kind TEXT DEFAULT 'link', ref TEXT DEFAULT '',
+        delivered_at TEXT, status TEXT DEFAULT 'pending', feedback TEXT DEFAULT '', decided_at TEXT, visible INTEGER DEFAULT 1);
+    CREATE TABLE onboarding_items (id TEXT PRIMARY KEY, client_id TEXT REFERENCES clients(id) ON DELETE CASCADE, title TEXT NOT NULL, done INTEGER DEFAULT 0, done_at TEXT, ord INTEGER DEFAULT 0);
+    CREATE TABLE changelog (id TEXT PRIMARY KEY, project_id TEXT REFERENCES projects(id) ON DELETE CASCADE, at TEXT, kind TEXT DEFAULT 'change', text TEXT NOT NULL, public INTEGER DEFAULT 1);
+    CREATE INDEX idx_changelog_project ON changelog(project_id, at);
+    CREATE TABLE client_comments (id TEXT PRIMARY KEY, project_id TEXT, milestone_id TEXT, deliverable_id TEXT, at TEXT, author TEXT DEFAULT 'client', text TEXT DEFAULT '', kind TEXT DEFAULT 'comment');
+    CREATE TABLE portal_tokens (id TEXT PRIMARY KEY, scope TEXT NOT NULL, ref_id TEXT NOT NULL, created_at TEXT, expires_at TEXT, revoked INTEGER DEFAULT 0, last_used TEXT, uses INTEGER DEFAULT 0);
+    """,
+    # v7: what was on screen when a screenshot was taken (active folder / tab / file)
+    """
+    ALTER TABLE screenshots ADD COLUMN context TEXT DEFAULT '';
+    """,
+    # v8: calendar events / appointments / webinars (recurring, with reminders, a join link and optional auto-open)
+    """
+    CREATE TABLE events (id TEXT PRIMARY KEY, title TEXT NOT NULL, kind TEXT DEFAULT 'event', start_utc TEXT NOT NULL, end_utc TEXT NOT NULL, all_day INTEGER DEFAULT 0,
+        project_id TEXT, client_id TEXT, location TEXT DEFAULT '', link TEXT DEFAULT '', notes TEXT DEFAULT '', reminders TEXT DEFAULT '[]', recurrence TEXT DEFAULT '{}',
+        exdates TEXT DEFAULT '[]', auto_open INTEGER DEFAULT 0, color TEXT DEFAULT '', status TEXT DEFAULT 'confirmed', created_at TEXT, updated_at TEXT);
+    CREATE INDEX idx_events_start ON events(start_utc);
+    """,
 ]
 
 _TABLES: Dict[type, str] = {Project: "projects", Client: "clients", TimeEntry: "entries", Invoice: "invoices",

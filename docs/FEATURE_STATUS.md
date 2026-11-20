@@ -116,3 +116,9 @@ Legend: **✅** logic built and unit-tested here · **🖥** has a UI screen/con
 - **Line target (50k)**: see README for the current count. Not reached, deliberately.
 - **Cross-platform / HiDPI / screenshot tests / installers / bundled fonts / screenshots**: not done.
 - **Google Calendar, Windows hotkey, OS idle, sound playback, real Qt rendering**: need testing on real machines.
+
+# v7 (FreeLog)
+Done + tested: client report engine, project health, client ops, catch-up, lists + bulk paste, project breakdown, screenshot context, calendar engine, check-in service.
+UI written but not visually verified on a real display: all pages above. Google Tasks tested against a fake API only.
+In progress: hourly check-in popup, calendar grid UI (day / 3-day / week / month, drag & resize), event reminder pop-up with countdown + join button.
+Planned: e-mail sending, local client portal, scheduler, promise / client-health screens.

@@ -31,6 +31,25 @@ def should_capture(now: dt.datetime, last_at: Optional[dt.datetime], interval_mi
     return last_at is None or now - last_at >= dt.timedelta(minutes=interval_min)
 
 
+def effective_interval(interval_min: float, jitter_pct: int, seed: str) -> float:
+    """The interval for the *next* shot: ``interval`` randomised by up to +-``jitter_pct`` % (deterministic for a given ``seed``, e.g. the last shot's time), so
+    captures do not land on a predictable clock and one tick can never flip between 'due' and 'not due'."""
+    jitter = max(0, min(50, int(jitter_pct)))
+    if not jitter:
+        return float(interval_min)
+    h = int.from_bytes(hashlib.blake2b(seed.encode(), digest_size=2).digest(), "big") / 65535.0       # 0..1
+    return max(1.0, interval_min * (1 + (h * 2 - 1) * jitter / 100.0))
+
+
+def within_schedule(local: dt.datetime, from_hour: int = 0, to_hour: int = 24, days_off=()) -> bool:
+    """Your private capture window: only between ``from_hour`` and ``to_hour`` (local clock; may wrap past midnight) and not on the days you switched off (Mon=0)."""
+    if local.weekday() in set(days_off):
+        return False
+    if from_hour == to_hour:
+        return True
+    return from_hour <= local.hour < to_hour if from_hour < to_hour else (local.hour >= from_hour or local.hour < to_hour)
+
+
 class ScreenshotStore:
     def __init__(self, db: Database, folder: Union[str, Path], grab: Grab, clock: Callable[[], dt.datetime] = now_utc) -> None:
         self.db, self.folder, self.grab, self.clock = db, Path(folder), grab, clock
@@ -57,7 +76,7 @@ class ScreenshotStore:
         """Take, compress and store one screenshot. Returns None when paused/blocked/duplicate/unavailable (see ``capture_result`` for why)."""
         return self.capture_result(app, title, force)[0]
 
-    def capture_result(self, app: str = "", title: str = "", force: bool = False) -> "tuple[Optional[Screenshot], str]":
+    def capture_result(self, app: str = "", title: str = "", force: bool = False, context: str = "") -> "tuple[Optional[Screenshot], str]":
         """Like ``capture`` but also says why nothing was stored: ``ok`` / ``paused`` / ``blocked`` / ``no_screen`` / ``duplicate`` / ``error``."""
         if self.paused and not force:
             return None, "paused"
@@ -85,7 +104,7 @@ class ScreenshotStore:
             if member in z.namelist():                     # two shots in one second: keep both
                 member = f"{local:%H%M%S}_{sig[:4]}.jpg"
             z.writestr(member, data)
-        shot = Screenshot(at=now, path=zpath.name, member=member, app=app[:100], title=title[:200], bytes=len(data), width=w, height=h, sig=sig)
+        shot = Screenshot(at=now, path=zpath.name, member=member, app=app[:100], title=title[:200], bytes=len(data), width=w, height=h, sig=sig, context=context[:300])
         self.db.save(shot)
         return shot, "ok"
 

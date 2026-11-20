@@ -71,7 +71,7 @@ class DbRound3(unittest.TestCase):
             c.execute("INSERT INTO projects (id,name,created_at,updated_at) VALUES ('p','Old','2026-01-01T00:00:00+00:00','2026-01-01T00:00:00+00:00')")
             c.commit(); c.close()
             db = Database(path)
-            self.assertEqual(db.version, 5)
+            self.assertEqual(db.version, len(__import__('worktracker.core.database', fromlist=['MIGRATIONS']).MIGRATIONS))
             self.assertEqual(db.get(Project, "p").name, "Old")
             self.assertTrue(db.integrity_ok()); db.close()
 

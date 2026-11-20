@@ -45,14 +45,17 @@ def main() -> int:
     from PyQt5.QtCore import Qt
     from PyQt5.QtWidgets import QApplication
     from worktracker.core.database import Database
-    from worktracker.ui import fonts, icons
+    from worktracker.ui import branding, fonts, icons
     from worktracker.ui.app import App
+
+    branding.set_windows_app_id()                       # must come before the first window: the taskbar shows FreeLog's icon and groups its windows under it
 
     if hasattr(Qt, "AA_EnableHighDpiScaling"):
         QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     if hasattr(Qt, "AA_UseHighDpiPixmaps"):
         QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
     app = QApplication(sys.argv)
+    branding.apply(app, [home / "assets"])               # application name, organisation and the FreeLog icon (title bar, taskbar, Alt-Tab, tray)
     db = Database(home / "worktracker.db")
     app.setLayoutDirection(Qt.RightToLeft if db.get_setting("lang", "fa") == "fa" else Qt.LeftToRight)
 
@@ -65,6 +68,12 @@ def main() -> int:
 
     win = App(db, home, info)
     win.show()
+    try:
+        from PyQt5.QtCore import QTimer
+        from worktracker.tools.shortcuts import ensure_shortcuts
+        QTimer.singleShot(4000, lambda: ensure_shortcuts(db, here.parent))          # Desktop + Start-menu icons with the FreeLog logo, once
+    except Exception:  # noqa: BLE001
+        log.exception("shortcut setup failed")
     code = app.exec_()
     db.close()
     return code

@@ -45,17 +45,46 @@ PAGES = ("dashboard", "entries", "kanban", "planner", "matrix", "pm", "billing",
 
 
 class Notifier:
-    """Tray balloon when the OS has a tray, otherwise an in-app liquid toast. Always truthy so callers need no checks."""
+    """Tray icon (the FreeLog logo; elapsed minutes while a timer runs) with a menu, plus tray balloons / an in-app liquid toast when there is no tray. Always truthy."""
 
     def __init__(self, win) -> None:
         self.win = win
         self.tray = QSystemTrayIcon(win) if QSystemTrayIcon.isSystemTrayAvailable() else None
+        if self.tray is not None:
+            from PyQt5.QtWidgets import QAction, QMenu
+            from . import branding
+            self._menu = QMenu()
+            self._menu.addAction(branding.APP_NAME, self._show)
+            self._menu.addAction(S["qa_title"], lambda: win.open_quick_panel() if hasattr(win, "open_quick_panel") else None)
+            self._menu.addAction(S["start"] + " / " + S["stop"], win.toggle_timer)
+            self._menu.addSeparator()
+            self._menu.addAction(S["quit"] if "quit" in S else "Quit", lambda: __import__("PyQt5.QtWidgets", fromlist=["QApplication"]).QApplication.quit())
+            self.tray.setContextMenu(self._menu)
+            self.tray.activated.connect(self._activated)
+            self.tray.setToolTip(branding.APP_NAME)
         self.set_icon("WT", "#6D5DFC")
 
+    def _show(self) -> None:
+        self.win.showNormal(); self.win.raise_(); self.win.activateWindow()
+
+    def _activated(self, reason) -> None:
+        if reason in (QSystemTrayIcon.Trigger, QSystemTrayIcon.DoubleClick):
+            if self.win.isVisible() and not self.win.isMinimized():
+                self.win.hide()
+            else:
+                self._show()
+
     def set_icon(self, text: str, color: str) -> None:
-        """Dynamic tray icon (elapsed minutes while tracking)."""
-        if self.tray is not None:
-            self.tray.setIcon(make_icon(text, color)); self.tray.show()
+        """The logo normally; a small coloured badge with the elapsed minutes while tracking."""
+        if self.tray is None:
+            return
+        if text == "WT":
+            from . import branding
+            ic = branding.app_icon([self.win.data_dir / "assets"]) if hasattr(self.win, "data_dir") else None
+            self.tray.setIcon(ic if ic is not None and not ic.isNull() else make_icon(text, color))
+        else:
+            self.tray.setIcon(make_icon(text, color))
+        self.tray.show()
 
     def showMessage(self, title: str, text: str) -> None:  # noqa: N802 - mirrors Qt naming for drop-in use
         if self.tray is not None:

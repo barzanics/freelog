@@ -285,3 +285,31 @@ def completion(db: Database, rid: str, days: int = 30, now: Optional[dt.datetime
     now = now or now_utc()
     past = [o for o in occurrences(r, now - dt.timedelta(days=days), now) if o[1] <= to_tehran(now)]
     return round(100 * sum(is_checked(db, rid, k) for k, _ in past) / len(past), 1) if past else 0.0
+
+
+# ------------------------------------------------------------------ missed check boxes (catch-up)
+def skip(db: Database, rid: str, key: str, now: Optional[dt.datetime] = None) -> None:
+    """Consciously drop one missed occurrence: it stops nagging and is not counted as done (so it also does not extend a streak)."""
+    if get(db, rid) is None:
+        raise KeyError(rid)
+    d = db.get_setting("routine_skips", {})
+    d.setdefault(rid, {})[key] = (now or now_utc()).isoformat()
+    db.set_setting("routine_skips", d)
+
+
+def is_skipped(db: Database, rid: str, key: str) -> bool:
+    return key in db.get_setting("routine_skips", {}).get(rid, {})
+
+
+def missed(db: Database, now: Optional[dt.datetime] = None, days: int = 2, grace_hours: float = 2.0) -> List[Dict[str, Any]]:
+    """Daily / weekly / monthly occurrences of the last ``days`` days that were never ticked or skipped (hourly and every-N-minutes routines are ephemeral and not listed)."""
+    now = now or now_utc()
+    lt = to_tehran(now)
+    out = []
+    for r in all_routines(db):
+        if not r["active"] or r["kind"] in ("hourly", "interval"):
+            continue
+        for key, due in occurrences(r, lt - dt.timedelta(days=days), lt - dt.timedelta(hours=grace_hours)):
+            if not is_checked(db, r["id"], key) and not is_skipped(db, r["id"], key):
+                out.append({"routine": r, "key": key, "due": due, "days_late": max(0, (lt.date() - due.date()).days)})
+    return sorted(out, key=lambda x: x["due"])

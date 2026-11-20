@@ -231,12 +231,13 @@ def _rp_export(win, fmt: str) -> None:
 class ShotViewer(PopDialog):
     def __init__(self, win, store: ScreenshotStore, shot: Screenshot) -> None:
         super().__init__(win, to_fa_digits(to_tehran(shot.at).strftime("%H:%M:%S")) + "  " + shot.app, "camera", 980)
+        self._ctx = shot.context
         self.store, self.shot, self.deleted = store, shot, False
         from PyQt5.QtGui import QPixmap
         pm = QPixmap(); pm.loadFromData(store.read(shot))
         lab = QLabel(); lab.setAlignment(Qt.AlignCenter)
         lab.setPixmap(pm.scaledToWidth(min(900, max(400, win.width() - 140)), Qt.SmoothTransformation) if not pm.isNull() else QPixmap())
-        self.body.addWidget(lab); self.body.addWidget(win.label(shot.title or "", 9, muted=True))
+        self.body.addWidget(lab); self.body.addWidget(win.label(shot.context or shot.title or "", 10, muted=bool(not shot.context)))
         dl = GlassButton(S["delete"], self.theme, danger=True, icon="trash"); dl.clicked.connect(self._del)
         sv = GlassButton(S["save_as"], self.theme, icon="download"); sv.clicked.connect(self._save)
         self.buttons(dl, sv)
@@ -330,7 +331,7 @@ def refresh_screenshots(win) -> None:
             pm = QPixmap(); pm.loadFromData(store.read(s))
             if not pm.isNull():
                 b.setIcon(QIcon(pm.scaledToWidth(220, Qt.SmoothTransformation))); b.setIconSize(QSize(220, 124)); b.setFixedSize(232, 136)
-            b.setToolTip(to_fa_digits(f"{to_tehran(s.at):%H:%M}  {s.app}  {s.title}"))
+            b.setToolTip(to_fa_digits(f"{to_tehran(s.at):%H:%M}  {s.app}\n{s.context or s.title}"))
             b.clicked.connect(lambda _c=False, ss=s: _open_shot(win, ss)); row.addWidget(b)
         info = QVBoxLayout(); lg = logs.get(h)
         info.addWidget(win.label(lg.summary if lg else "", 10)); 
@@ -538,10 +539,14 @@ def _sec_shots(win, sec: Section) -> None:
     sec.add("", win.label(S["shots_explain"], 10, muted=True))
     sec.add("", _row(S["shots_enabled"], _sw(win, "shots_enabled", False)))
     sec.add("", _row(S["shots_only_working"], _sw(win, "shots_require_engaged", True)))
-    sec.pair(S["shots_interval"], _spin(win, "shots_interval", 60, 5, 720, " " + S["min"]), S["shots_keep"], _spin(win, "shots_keep_days", 30, 1, 3650, " " + S["days"]))
+    sec.pair(S["shots_interval"], _spin(win, "shots_interval", 60, 1, 720, " " + S["min"]), S["shots_keep"], _spin(win, "shots_keep_days", 30, 1, 3650, " " + S["days"]))
     sec.pair(S["shots_width"], _spin(win, "shots_width", 1280, 640, 3840, " px"), S["shots_quality"], _spin(win, "shots_quality", 45, 15, 90, "%"))
     sec.pair(S["shots_max_mb"], _spin(win, "shots_max_mb", 500, 20, 100000, " MB"), "", QWidget())
     sec.add("", _row(S["shots_gray"], _sw(win, "shots_gray", False)))
+    sec.pair(S["shots_jitter"], _spin(win, "shots_jitter", 0, 0, 50, "%"), S["shots_hours"], QWidget())
+    sec.pair(S["shots_from"], _spin(win, "shots_from_hour", 0, 0, 23, ":00"), S["shots_to"], _spin(win, "shots_to_hour", 24, 1, 24, ":00"))
+    off = ChipInput(); sec.add(S["shots_days_off_hint"], win.label(S["shots_private_note"], 9, muted=True))
+    sec.add("", _row(S["shots_context"], _sw(win, "shots_record_context", True)))
     b = Section(S["shots_privacy"]); b.add(S["shots_blocked"], _bind(win, "shots_blocked", ChipInput(placeholder=S["app_name_hint"]), ["keepass", "bitwarden", "1password", "lastpass", "password", "بانک", "bank", "پرداخت", "payment", "incognito", "private browsing"]))
     b.add("", _row(S["shots_paused"], _sw(win, "shots_paused", False)))
     op = GlassButton(S["open_folder"], win.theme, icon="projects"); op.clicked.connect(lambda: _open_folder(win.data_dir / "screenshots")); b.add("", op); win._settings_extra.append(b)

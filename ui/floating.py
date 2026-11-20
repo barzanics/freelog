@@ -233,7 +233,7 @@ class QuickPanel(QFrame):
     def popup_at_bubble(self) -> None:
         self.adjustSize()
         b = self.bubble
-        bx, by = b.x() + 12, b.y() + 12
+        bx, by = b.x() + b.MARGIN, b.y() + b.MARGIN
         screen = _screen_rect(b.pos())
         x, y = geo.panel_position((bx, by, b.orb_size, b.orb_size), self.width(), self.sizeHint().height(), screen)
         self.move(x, y); self.show(); self.edit.setFocus()
@@ -261,6 +261,8 @@ class QuickPanel(QFrame):
 class FloatingBubble(QWidget):
     """The orb. Frameless, translucent, always on top, hidden from the task bar."""
 
+    MARGIN = 26                                    # room around the orb for its glow; the glow fades to nothing before the window edge, so it can never look square
+
     def __init__(self, win) -> None:
         super().__init__(None, Qt.Tool | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.NoDropShadowWindowHint)
         self.win, self.theme, self.db = win, win.theme, win.db
@@ -286,7 +288,7 @@ class FloatingBubble(QWidget):
     def reload(self) -> None:
         db = self.db
         self.orb_size = SIZES.get(db.get_setting("float_size", "m"), 66)
-        self.setFixedSize(self.orb_size + 24, self.orb_size + 24)
+        self.setFixedSize(self.orb_size + 2 * self.MARGIN, self.orb_size + 2 * self.MARGIN)
         self._opacity_active = max(0.3, min(1.0, int(db.get_setting("float_opacity", 95)) / 100))
         self._opacity_idle = max(0.2, min(self._opacity_active, int(db.get_setting("float_idle_opacity", 55)) / 100))
         self.setWindowOpacity(self._opacity_idle)
@@ -411,10 +413,11 @@ class FloatingBubble(QWidget):
         breathe = 0.0 if self.theme.lite else (math.sin(self._t * 2.2) * 1.2 if self._running else 0.0)
         r = QRectF((self.width() - d) / 2 - hv * 1.5 - breathe, (self.height() - d) / 2 - hv * 1.5 - breathe, d + 3 * hv + 2 * breathe, d + 3 * hv + 2 * breathe)
         a0, a1, a2 = self.theme.accents
-        glow = QRadialGradient(r.center(), r.width() * 0.95)
-        glow.setColorAt(0.55, qcolor(a1, int(70 + 50 * hv))); glow.setColorAt(1, qcolor(a1, 0))
-        p.setPen(Qt.NoPen); p.setBrush(QBrush(glow)); p.drawEllipse(r.center(), r.width() * 0.95, r.height() * 0.95)
-        p.setBrush(QColor(0, 0, 0, 60)); p.drawEllipse(r.translated(0, 3))                                   # soft shadow
+        gr = geo.glow_radius(d, self.MARGIN)                                              # the largest circle that still fits inside the window
+        glow = QRadialGradient(r.center(), gr)
+        glow.setColorAt(0.0, qcolor(a1, 0)); glow.setColorAt(d / 2 / gr, qcolor(a1, int(44 + 34 * hv))); glow.setColorAt(1.0, qcolor(a1, 0))
+        p.setPen(Qt.NoPen); p.setBrush(QBrush(glow)); p.drawEllipse(r.center(), gr, gr)
+        p.setBrush(QColor(0, 0, 0, 46)); p.drawEllipse(r.adjusted(2, 4, -2, 2))                                   # soft shadow, inside the orb's footprint
         g = QRadialGradient(QPointF(r.left() + r.width() * 0.32, r.top() + r.height() * 0.25), r.width() * 0.95)
         g.setColorAt(0, qcolor(a1, 255)); g.setColorAt(0.65, qcolor(a0, 245)); g.setColorAt(1, qcolor(a0, 215))
         p.setBrush(QBrush(g)); p.drawEllipse(r)

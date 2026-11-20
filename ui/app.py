@@ -20,12 +20,15 @@ from ..services.pomodoro import Pomodoro
 from ..services.projects import ProjectService
 from ..services.tracker import Tracker, TrackerSettings
 from ..services.undo import UndoManager
-from . import icons
+from . import branding, icons
 from . import pages_new as pn
 from . import pages_ops as po
 from . import pm_pages as pm
 from . import dashboard as dash
 from . import routines_ui as ru
+from . import catchup_ui as cuu
+from . import client_reports_ui as crp
+from ..services import catchup as catchup_svc
 from . import lists_ui as lu
 from . import pages_extra as px
 from .dialogs import PopDialog, Scrim, TaskDialog
@@ -40,8 +43,8 @@ from .strings import S, set_language
 log = logging.getLogger("worktracker.app")
 
 # (page key, icon). The order is also the order pages are built and stacked.
-NAV = (("dashboard", "dashboard"), ("today", "today"), ("tasks", "tasks"), ("lists", "check"), ("board", "board"), ("calendar", "calendar"), ("planner", "planner"), ("matrix", "matrix"),
-       ("projects", "projects"), ("pm", "pm"), ("habits", "habits"), ("routines", "bell"), ("goals", "goals"), ("team", "team"), ("billing", "billing"), ("reports", "reports"),
+NAV = (("dashboard", "dashboard"), ("today", "today"), ("tasks", "tasks"), ("catchup", "flag"), ("lists", "check"), ("board", "board"), ("calendar", "calendar"), ("planner", "planner"), ("matrix", "matrix"),
+       ("projects", "projects"), ("pm", "pm"), ("habits", "habits"), ("routines", "bell"), ("goals", "goals"), ("team", "team"), ("billing", "billing"), ("reports", "reports"), ("client_reports", "reports"),
        ("analytics", "analytics"), ("screenshots", "screenshots"), ("entries", "list"), ("tools", "tools"), ("settings", "settings"))
 PAGE_KEYS = tuple(k for k, _ in NAV)
 COLLAPSE_BELOW = 1060
@@ -75,7 +78,7 @@ class App(MainWindow):
         from ..services.analytics import Analytics
         self.analytics = Analytics(db)
         self.jy = date_to_jalali(to_tehran(now_utc()).date())[0]
-        self.setWindowTitle(S["app"]); self.resize(1280, 820); self.setMinimumSize(760, 560)
+        self.setWindowTitle(branding.APP_NAME); self.setWindowIcon(branding.app_icon([self.data_dir / "assets"])); self.resize(1280, 820); self.setMinimumSize(760, 560)
         self.setLayoutDirection(Qt.RightToLeft if lang == "fa" else Qt.LeftToRight)
         self.dash_cols, self._collapsed, self._detached = 2, False, {}
         self.apply_style()
@@ -115,9 +118,9 @@ class App(MainWindow):
         self._build_dashboard()
         self.dash_cards["tip"] = (po.build_tip_card(self), 1)
         self.layout_dashboard()
-        pn.build_today(self); pn.build_tasks(self); lu.build_lists(self); pn.build_board(self); pn.build_calendar(self); px.build_planner(self); pm.build_matrix(self)
+        pn.build_today(self); pn.build_tasks(self); cuu.build_catchup(self); lu.build_lists(self); pn.build_board(self); pn.build_calendar(self); px.build_planner(self); pm.build_matrix(self)
         pn.build_projects(self); pm.build_pm(self); pn.build_habits_page(self); ru.build_routines(self); pn.build_goals(self); px.build_team(self); self._build_billing()
-        po.build_reports(self); px.build_analytics(self); po.build_screenshots(self); self._build_entries(); pm.build_tools(self); po.build_settings_page(self)
+        po.build_reports(self); crp.build_client_reports(self); px.build_analytics(self); po.build_screenshots(self); self._build_entries(); pm.build_tools(self); po.build_settings_page(self)
         assert self.pages.count() == len(NAV), "page order must match NAV"
         self._wrap_pages_in_scroll_areas()
         self.nav_buttons[0][0].primary = True
@@ -173,6 +176,19 @@ class App(MainWindow):
         from PyQt5.QtCore import QProcess
         QProcess.startDetached(sys.executable, sys.argv)
         QApplication.quit()
+
+    def update_catchup_badge(self) -> int:
+        """Show how much has slipped on the sidebar button (tooltip + a dot-count in the label when the sidebar is wide)."""
+        try:
+            n = catchup_svc.scan(self.db)["counts"]["total"]
+        except Exception:  # noqa: BLE001
+            return 0
+        for b, key in self.nav_buttons:
+            if key == "catchup":
+                b.setToolTip(S["catchup"] + (f" ({n})" if n else ""))
+                if not self._collapsed:
+                    b.setText(S["catchup"] + (to_fa_digits(f"  {n}") if n else ""))
+        return n
 
     def open_daily_report(self) -> None:
         from .daily_ui import DailyReportDialog
@@ -275,7 +291,7 @@ class App(MainWindow):
     def _build_sidebar(self) -> None:
         v = QVBoxLayout(self.side); v.setContentsMargins(10, 14, 10, 12); v.setSpacing(6)
         head = QHBoxLayout(); logo = QLabel(); logo.setPixmap(icons.pixmap("bubble", self.theme.accents[1], 30)); head.addWidget(logo)
-        self.brand = self.label(S["app"], 14, True); head.addWidget(self.brand, 1)
+        self.brand = self.label(branding.APP_NAME, 14, True); head.addWidget(self.brand, 1)
         v.addLayout(head)
         host = QWidget(); hl = QVBoxLayout(host); hl.setContentsMargins(0, 4, 0, 4); hl.setSpacing(5)
         self.nav_buttons: List[tuple] = []
@@ -348,10 +364,10 @@ class App(MainWindow):
 
     def refresh_visible(self) -> None:
         key = self.current_key()
-        fn = {"today": lambda: pn.refresh_today(self), "tasks": lambda: pn.refresh_tasks(self), "lists": lambda: lu.refresh_lists(self), "board": lambda: pn.refresh_board(self), "calendar": lambda: pn.refresh_calendar(self),
+        fn = {"today": lambda: pn.refresh_today(self), "tasks": lambda: pn.refresh_tasks(self), "catchup": lambda: cuu.refresh_catchup(self), "lists": lambda: lu.refresh_lists(self), "board": lambda: pn.refresh_board(self), "calendar": lambda: pn.refresh_calendar(self),
               "planner": lambda: px.refresh_planner(self), "matrix": lambda: pm.refresh_matrix(self), "projects": lambda: pn.refresh_projects(self), "pm": lambda: pm.refresh_pm(self),
               "habits": lambda: pn.refresh_habits_page(self), "routines": lambda: ru.refresh_routines(self), "goals": lambda: pn.refresh_goals(self), "team": lambda: px.refresh_team(self), "billing": self.refresh_billing,
-              "reports": lambda: po.refresh_reports(self), "analytics": lambda: px.refresh_analytics(self), "screenshots": lambda: po.refresh_screenshots(self),
+              "reports": lambda: po.refresh_reports(self), "client_reports": lambda: crp.refresh_client_reports(self), "analytics": lambda: px.refresh_analytics(self), "screenshots": lambda: po.refresh_screenshots(self),
               "entries": self.refresh_entries, "tools": lambda: pm.refresh_tools(self)}.get(key)
         if fn is not None:
             try:

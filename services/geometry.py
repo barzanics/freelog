@@ -38,3 +38,8 @@ def panel_position(bubble: Rect, panel_w: int, panel_h: int, screen: Rect, gap: 
     else:
         y = by + bh / 2 - panel_h / 2
     return int(x), int(clamp(y, sy + 6, sy + sh - panel_h - 6))
+
+
+def glow_radius(orb: int, margin: int, pad: int = 2) -> float:
+    """Radius of the glow around the floating orb: the inscribed circle of its window (orb + margin on every side) minus ``pad`` - so the glow fades out before the edge."""
+    return orb / 2.0 + margin - pad

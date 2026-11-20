@@ -61,9 +61,9 @@ class DatabaseTests(unittest.TestCase):
 
     def test_wal_and_version(self):
         self.assertEqual(self.db.conn.execute("PRAGMA journal_mode").fetchone()[0], "wal")
-        self.assertEqual(self.db.version, 5)
+        self.assertEqual(self.db.version, len(__import__('worktracker.core.database', fromlist=['MIGRATIONS']).MIGRATIONS))
         self.db.migrate()  # idempotent
-        self.assertEqual(self.db.version, 5)
+        self.assertEqual(self.db.version, len(__import__('worktracker.core.database', fromlist=['MIGRATIONS']).MIGRATIONS))
 
     def test_crud_all_entities(self):
         c = Client(name="مشتری", tags=["vip"])

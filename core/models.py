@@ -456,6 +456,7 @@ class Screenshot(_Row):
     width: int = 0
     height: int = 0
     sig: str = ""            # tiny content signature (used to skip identical consecutive screens)
+    context: str = ""        # what was open: active Explorer folder / browser tab / editor file (services/context.py)
 
     DT_FIELDS = ("at",)
 
