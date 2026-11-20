@@ -10,7 +10,9 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    # This application uses PyQt5 only. Prevent PyInstaller from collecting
+    # other Qt bindings pulled in indirectly by installed packages.
+    excludes=['PyQt6', 'PySide6', 'PySide2', 'PySide'],
     noarchive=False,
     optimize=0,
 )

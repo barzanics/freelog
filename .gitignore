@@ -80,6 +80,7 @@ packaging/build/
 packaging/dist/
 output/
 release/
+release-artifacts/
 
 # ---------- Temp ----------
 *.tmp
